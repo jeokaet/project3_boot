@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RegionMapper">
+
+	<insert id="insertRegion" parameterType="com.kedu.home.dto.RegionDTO">
+	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, null )
+	</insert>
+	
+	<select id="selectRegionList" resultType="com.kedu.home.dto.RegionDTO">
+		SELECT * FROM region
+	</select>
+
+</mapper>
