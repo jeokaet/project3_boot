@@ -1,0 +1,46 @@
+# Spring Boot
+HELP.md
+target/
+*.log
+*.tmp
+*.bak
+
+# Maven
+.mvn/
+!mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+build/
+
+# STS (Spring Tool Suite)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.metadata/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VSCode
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db

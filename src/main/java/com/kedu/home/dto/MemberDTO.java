@@ -14,12 +14,9 @@ public class MemberDTO {
 	private String subAddress;
 	private int postCode;
 	private String emailAddress;
-	private String firstCategory;
-	private String secondCategory;
 	
 	public MemberDTO(String loginId, String loginPw, String nickName, Date createAt, String profilePicture,
-			String phoneNumber, String mainAddress, String subAddress, int postCode, String emailAddress,
-			String firstCategory, String secondCategory) {
+			String phoneNumber, String mainAddress, String subAddress, int postCode, String emailAddress) {
 		super();
 		this.loginId = loginId;
 		this.loginPw = loginPw;
@@ -31,8 +28,6 @@ public class MemberDTO {
 		this.subAddress = subAddress;
 		this.postCode = postCode;
 		this.emailAddress = emailAddress;
-		this.firstCategory = firstCategory;
-		this.secondCategory = secondCategory;
 	}
 	public MemberDTO() {
 		super();
@@ -97,18 +92,7 @@ public class MemberDTO {
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-	public String getFirstCategory() {
-		return firstCategory;
-	}
-	public void setFirstCategory(String firstCategory) {
-		this.firstCategory = firstCategory;
-	}
-	public String getSecondCategory() {
-		return secondCategory;
-	}
-	public void setSecondCategory(String secondCategory) {
-		this.secondCategory = secondCategory;
-	}
+
 	
 	
 }
