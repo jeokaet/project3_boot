@@ -10,5 +10,17 @@
 	<select id="selectRegionList" resultType="com.kedu.home.dto.RegionDTO">
 		SELECT * FROM region
 	</select>
+	
+	<delete id="deleteRegions" parameterType="List">
+		DELETE FROM region 
+		 WHERE regionId IN 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
+	</delete>
+	
+	<update id="updateRegion" parameterType="com.kedu.home.dto.RegionDTO">
+		UPDATE region SET regionName=#{regionName}, regionDetail = #{regionDetail}, fileId = null WHERE regionId=${regionId}
+	</update>
 
 </mapper>
