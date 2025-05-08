@@ -22,5 +22,13 @@ public class RegionDAO {
 		List<RegionDTO> list = mybatis.selectList("RegionMapper.selectRegionList");
 		return list;
 	}
+	
+	public void deleteRegions(List<Integer> idList) {
+		mybatis.delete("RegionMapper.deleteRegions", idList);
+	}
+	
+	public void updateRegion(RegionDTO region) {
+		mybatis.update("RegionMapper.updateRegion", region);
+	}
 
 }
