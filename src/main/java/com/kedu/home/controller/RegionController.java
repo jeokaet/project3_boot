@@ -23,10 +23,17 @@ public class RegionController {
 	public RegionService regionServ;
 	
 	@PostMapping
-	public ResponseEntity<Void> insertRegion(@RequestBody RegionDTO dto){
-		regionServ.insertRegion(dto);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<?> insertRegion(@RequestBody RegionDTO dto){
+	    try {
+	        regionServ.insertRegion(dto);
+	        return ResponseEntity.ok().build();
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());  // HTTP 400
+	    } catch (Exception e) {
+	        return ResponseEntity.status(500).body("서버 오류가 발생했습니다.");
+	    }
 	}
+
 	
 	@GetMapping
 	public ResponseEntity<List<RegionDTO>> selectRegionList(){
