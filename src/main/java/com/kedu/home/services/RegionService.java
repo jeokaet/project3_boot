@@ -18,6 +18,12 @@ public class RegionService {
 	public RegionDAO rDao;
 	
 	public void insertRegion(RegionDTO dto) {
+		if(dto.getRegionName()==null||dto.getRegionName().trim().isEmpty()) {
+			throw new IllegalArgumentException("지역 명은 필수 입력 사항입니다.");
+		}
+		if(dto.getRegionDetail()==null||dto.getRegionDetail().trim().isEmpty()) {
+			throw new IllegalArgumentException("지역 설명은 필수입니다.");
+		}
 		rDao.insertRegion(dto);
 	}
 	
