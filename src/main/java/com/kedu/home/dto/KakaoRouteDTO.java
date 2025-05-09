@@ -4,22 +4,29 @@ import java.util.List;
 import java.util.Map;
 
 public class KakaoRouteDTO {
-	private Map<String, Double> origin;
-	private List<Map<String, Double>> destinations;
 	
+	private Map<String, String> start; // {"x": "126.97843", "y": "37.56668"}
+	private List<Map<String, String>> goal;  // {"x": "127.02758", "y": "37.49794"}
+	private List<Map<String, String>> waypoints; // [{"x": "...", "y": "..."}, ...]
 	
-	public Map<String, Double> getOrigin() {
-		return origin;
+		
+	public Map<String, String> getStart() {
+		return start;
 	}
-	public void setOrigin(Map<String, Double> origin) {
-		this.origin = origin;
+	public void setStart(Map<String, String> start) {
+		this.start = start;
 	}
-	public List<Map<String, Double>> getDestinations() {
-		return destinations;
+	public List<Map<String, String>> getGoal() {
+		return goal;
 	}
-	public void setDestinations(List<Map<String, Double>> destinations) {
-		this.destinations = destinations;
+	public void setGoal(List<Map<String, String>> goal) {
+		this.goal = goal;
 	}
-	
+	public List<Map<String, String>> getWaypoints() {
+		return waypoints;
+	}
+	public void setWaypoints(List<Map<String, String>> waypoints) {
+		this.waypoints = waypoints;
+	}
 	
 }

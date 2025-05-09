@@ -33,7 +33,7 @@ public class SecurityConfig {
 			.formLogin(form -> form.disable())
 			.httpBasic(basic -> basic.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//			.addFilterBefore(jwtf, UsernamePasswordAuthenticationFilter.class)
+//			.addFilterBefore(jwtf, UsernamePasswordAuthenticationFilter.class) 인증때문에 주석처리함
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers("/main/**").authenticated()
 					.requestMatchers("/admin/**").hasRole("ADMIN")
@@ -78,4 +78,5 @@ public class SecurityConfig {
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+
 }
