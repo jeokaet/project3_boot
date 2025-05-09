@@ -4,6 +4,7 @@ target/
 *.log
 *.tmp
 *.bak
+*.json
 
 # Maven
 .mvn/
