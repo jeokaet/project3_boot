@@ -30,7 +30,7 @@ public class AuthController {
 
         if (aServ.isAvailableIdAndPw(id, pw)) {
             String token = jwt.createToken(id);
-            return ResponseEntity.ok(token); // 오직 JWT 토큰만 반환
+            return ResponseEntity.ok(token); // 오직 JWT 토큰만 반환s
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
