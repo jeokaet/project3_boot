@@ -12,8 +12,11 @@ public class FileDAO {
 	@Autowired
     private SqlSession mybatis;
 	
-	public void saveImage(FileDTO file) {
+	public int saveImage(FileDTO file) {
 		mybatis.insert("FileMapper.saveImage", file);
+		int fileId = file.getImageId();
+		
+		return fileId;
 	}
 
 }

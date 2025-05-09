@@ -14,6 +14,7 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.kedu.home.dao.FileDAO;
+import com.kedu.home.dto.AddRegionDTO;
 import com.kedu.home.dto.FileDTO;
 
 @Service
@@ -28,7 +29,9 @@ public class FileService {
 	@Value("${gcs.bucket.name}")
 	private String bucketName;
 
-	public void upload(MultipartFile file) throws Exception{
+	public int upload(AddRegionDTO dto) throws Exception{
+		MultipartFile file = dto.getFile();
+		System.out.println("파일 이름 : " + file.getOriginalFilename());
 		String sysName = UUID.randomUUID() + " _ "+file.getOriginalFilename();
 		
 		BlobId blobId = BlobId.of(bucketName, sysName);
@@ -40,12 +43,13 @@ public class FileService {
 
 		
 		FileDTO fileDto = new FileDTO();
-		//fileDto.setFileTypeId();
 		fileDto.setSysname(sysName);
 		fileDto.setOriname(file.getOriginalFilename());
+		fileDto.setFilePath(filePath);
 		
-		fileDao.saveImage(null);
+		int imageId = fileDao.saveImage(fileDto);
 		
+		return imageId;
 		
 	}
 

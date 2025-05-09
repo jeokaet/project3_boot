@@ -9,10 +9,10 @@
 		<version>3.4.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.kedu.study</groupId>
-	<artifactId>Project3_Boot</artifactId>
+	<groupId>com.kedu</groupId>
+	<artifactId>3FinalPro</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Project3_Boot</name>
+	<name>3FinalPro</name>
 	<description>Demo project for Spring Boot</description>
 	<url />
 	<licenses>
@@ -49,7 +49,7 @@
 		<!-- 여기까지 내가 생성함-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -103,6 +103,7 @@
          <artifactId>java-jwt</artifactId>
          <version>4.4.0</version> 
       </dependency>
+
 	</dependencies>
 
 	<build>

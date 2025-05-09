@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RegionMapper">
+
+	<insert id="insertRegion" parameterType="com.kedu.home.dto.RegionDTO">
+	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, #{fileId} )
+	</insert>
+	
+	<select id="selectRegionList" resultType="com.kedu.home.dto.GetRegionDTO">
+		SELECT r.regionName,
+			   r.regionDetail,
+			   i.filePath
+		  FROM region r
+		  JOIN regionImg i ON r.fileId = i.imageId
+	</select>
+	
+	<delete id="deleteRegions" parameterType="List">
+		DELETE FROM region 
+		 WHERE regionId IN 
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
+	</delete>
+	
+	<update id="updateRegion" parameterType="com.kedu.home.dto.RegionDTO">
+		UPDATE region SET regionName=#{regionName}, regionDetail = #{regionDetail}, fileId = null WHERE regionId=${regionId}
+	</update>
+
+</mapper>

@@ -3,7 +3,11 @@
 
 <mapper namespace="FileMapper">
 	<insert id="saveImage" parameterType="com.kedu.home.dto.FileDTO">
-		INSERT INTO files VALUES (fileSeq.nextval, #{fileTypeId}, #{oriame} #{sysname}, #{filePath})
+	    <selectKey keyProperty="imageId" resultType="int" order="BEFORE">
+	        SELECT regionImageSeq.NEXTVAL FROM dual
+	    </selectKey>
+	    INSERT INTO regionImg VALUES (#{imageId}, #{oriname}, #{sysname}, #{filePath})
 	</insert>
+
 
 </mapper>
