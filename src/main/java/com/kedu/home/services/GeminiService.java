@@ -1,0 +1,63 @@
+package com.kedu.home.services;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import okhttp3.*;
+
+@Service
+public class GeminiService {
+
+    private final OkHttpClient client = new OkHttpClient();
+
+    @Value("${gemini.api.key}")
+    private String apiKey;
+
+    private static final MediaType JSON = MediaType.parse("application/json");
+
+    public String call(String prompt) throws IOException {
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + apiKey;
+
+        ObjectMapper mapper = new ObjectMapper();
+        String bodyJson = mapper.writeValueAsString(
+                Map.of("contents", new Object[] {
+                        Map.of("parts", new Object[] { Map.of("text", prompt) })
+                })
+        );
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(bodyJson, JSON))
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                System.out.println("❌ Gemini 응답 실패 - 코드: " + response.code());
+                System.out.println("❌ 응답 바디: " + response.body());
+                throw new IOException("Gemini 응답 실패: " + response.code());
+            }
+
+            String body = response.body().string();
+            System.out.println("🔵 Gemini 응답 원문:\n" + body);
+
+            JsonNode json = mapper.readTree(body);
+            String content = json.at("/candidates/0/content/parts/0/text").asText();
+            System.out.println("🟢 추출된 LLM 텍스트:\n" + content);
+
+            // ✅ 마크다운 블록 제거
+            String cleaned = content.replaceAll("(?s)```json\\s*|```", "").trim();
+
+            return cleaned;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("Gemini 호출 중 예외 발생", e);
+        }
+    }
+}
