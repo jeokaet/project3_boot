@@ -17,6 +17,7 @@ import com.kedu.home.dao.FileDAO;
 import com.kedu.home.dto.AddRegionDTO;
 import com.kedu.home.dto.FileDTO;
 
+
 @Service
 public class FileService {
 	
@@ -32,12 +33,14 @@ public class FileService {
 	public int upload(AddRegionDTO dto) throws Exception{
 		MultipartFile file = dto.getFile();
 		System.out.println("파일 이름 : " + file.getOriginalFilename());
+
 		String sysName = UUID.randomUUID() + " _ "+file.getOriginalFilename();
 		
 		BlobId blobId = BlobId.of(bucketName, sysName);
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
 				
 		storage.create(blobInfo, file.getBytes());
+
 		
 		String filePath = String.format("https://storage.googleapis.com/%s/%s", bucketName, sysName);
 

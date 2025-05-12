@@ -22,15 +22,16 @@ public class FileController {
 	@Autowired
 	private FileService fServ;
 
-//	@PostMapping("/up")
-//	public ResponseEntity<Void> upload(MultipartFile file) throws Exception {
-//		System.out.println(file.getOriginalFilename());
-//		
-//		fServ.upload(file);
-//
-//		//DB에 파일정보 저장하는 코드
-//		return ResponseEntity.ok().build();
-//	}
+	@PostMapping("/up")
+	public ResponseEntity<Void> upload(MultipartFile file) throws Exception {
+		System.out.println(file.getOriginalFilename());
+		//GCS 파일 업로드
+		//fServ.upload(file);
+
+		//DB에 파일정보 저장하는 코드
+		return ResponseEntity.ok().build();
+	}
+
 	@GetMapping("/list")
 	public ResponseEntity<List<String>> getListfiles() throws Exception{
 		System.out.println("Connection Complete");
