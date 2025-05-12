@@ -25,6 +25,7 @@ build/
 .springBeans
 .sts4-cache
 .metadata/
+*.properties
 
 # IntelliJ IDEA
 .idea/
