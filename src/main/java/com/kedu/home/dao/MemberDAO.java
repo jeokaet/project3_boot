@@ -17,7 +17,7 @@ public class MemberDAO {
     private static final String NAMESPACE = "MemberMapper";
 
     public boolean isAvailableIdAndPw(String id, String pw) {
-        MemberDTO result = mybatis.selectOne(NAMESPACE + ".selectByLoginIdAndPw", Map.of("loginId", id, "loginPw", pw));
+        MemberDTO result = mybatis.selectOne(NAMESPACE + ".selectByLoginIdAndPw", Map.of("loginId", id, "pw", pw));
         return result != null;
     }
 

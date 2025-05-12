@@ -1,36 +1,50 @@
 package com.kedu.home.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class MemberDTO {
 
+	private int memberId;
 	private String loginId;
-	private String loginPw;
-	private String nickName;
-	private Date createAt;
-	private String profilePicture;
-	private String phoneNumber;
-	private String mainAddress;
-	private String subAddress;
+	private String pw;
+	private String userName;
+	private Timestamp created_at;
+	private String gender;
+	private int birth;
+	private String email;
+	private String address1;
+	private String address2;
 	private int postCode;
-	private String emailAddress;
+	private String agreement;
+	private String profileImageId;
 	
-	public MemberDTO(String loginId, String loginPw, String nickName, Date createAt, String profilePicture,
-			String phoneNumber, String mainAddress, String subAddress, int postCode, String emailAddress) {
+	
+	public MemberDTO() {};
+	
+	public MemberDTO(int memberId, String loginId, String pw, String userName, Timestamp created_at, String gender,
+			int birth, String email, String address1, String address2, int postCode, String agreement,
+			String profileImageId) {
 		super();
+		this.memberId = memberId;
 		this.loginId = loginId;
-		this.loginPw = loginPw;
-		this.nickName = nickName;
-		this.createAt = createAt;
-		this.profilePicture = profilePicture;
-		this.phoneNumber = phoneNumber;
-		this.mainAddress = mainAddress;
-		this.subAddress = subAddress;
+		this.pw = pw;
+		this.userName = userName;
+		this.created_at = created_at;
+		this.gender = gender;
+		this.birth = birth;
+		this.email = email;
+		this.address1 = address1;
+		this.address2 = address2;
 		this.postCode = postCode;
-		this.emailAddress = emailAddress;
+		this.agreement = agreement;
+		this.profileImageId = profileImageId;
 	}
-	public MemberDTO() {
-		super();
+
+	public int getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 	public String getLoginId() {
 		return loginId;
@@ -38,47 +52,58 @@ public class MemberDTO {
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
 	}
-	public String getLoginPw() {
-		return loginPw;
+	
+	public String getPw() {
+		return pw;
 	}
-	public void setLoginPw(String loginPw) {
-		this.loginPw = loginPw;
+
+	public void setPw(String pw) {
+		this.pw = pw;
 	}
-	public String getNickName() {
-		return nickName;
+
+	public String getUserName() {
+		return userName;
 	}
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public Date getCreateAt() {
-		return createAt;
+
+	public Timestamp getCreated_at() {
+		return created_at;
 	}
-	public void setCreateAt(Date createAt) {
-		this.createAt = createAt;
+	public void setCreated_at(Timestamp created_at) {
+		this.created_at = created_at;
 	}
-	public String getProfilePicture() {
-		return profilePicture;
+	public String getGender() {
+		return gender;
 	}
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public int getBirth() {
+		return birth;
 	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setBirth(int birth) {
+		this.birth = birth;
 	}
-	public String getMainAddress() {
-		return mainAddress;
+	public String getEmail() {
+		return email;
 	}
-	public void setMainAddress(String mainAddress) {
-		this.mainAddress = mainAddress;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	public String getSubAddress() {
-		return subAddress;
+	public String getAddress1() {
+		return address1;
 	}
-	public void setSubAddress(String subAddress) {
-		this.subAddress = subAddress;
+	public void setAddress1(String address1) {
+		this.address1 = address1;
+	}
+	public String getAddress2() {
+		return address2;
+	}
+	public void setAddress2(String address2) {
+		this.address2 = address2;
 	}
 	public int getPostCode() {
 		return postCode;
@@ -86,13 +111,21 @@ public class MemberDTO {
 	public void setPostCode(int postCode) {
 		this.postCode = postCode;
 	}
-	public String getEmailAddress() {
-		return emailAddress;
+	public String getAgreement() {
+		return agreement;
 	}
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+	public void setAgreement(String agreement) {
+		this.agreement = agreement;
 	}
-
+	public String getProfileImageId() {
+		return profileImageId;
+	}
+	public void setProfileImageId(String profileImageId) {
+		this.profileImageId = profileImageId;
+	}
+	
+	
+	
 	
 	
 }
