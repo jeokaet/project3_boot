@@ -51,8 +51,10 @@ public class JWTFilter extends OncePerRequestFilter {
 			System.out.println("현재 permission: " + permissions);
 
 			List<SimpleGrantedAuthority> auths = new ArrayList<>();
-			for (String permission : permissions) {
-				auths.add(new SimpleGrantedAuthority(permission));
+			if (permissions != null) {
+			    for (String permission : permissions) {
+			        auths.add(new SimpleGrantedAuthority(permission));
+			    }
 			}
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
 					auths);

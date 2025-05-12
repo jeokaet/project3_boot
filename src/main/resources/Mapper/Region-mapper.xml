@@ -4,11 +4,15 @@
 <mapper namespace="RegionMapper">
 
 	<insert id="insertRegion" parameterType="com.kedu.home.dto.RegionDTO">
-	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, null )
+	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, #{fileId} )
 	</insert>
 	
-	<select id="selectRegionList" resultType="com.kedu.home.dto.RegionDTO">
-		SELECT * FROM region
+	<select id="selectRegionList" resultType="com.kedu.home.dto.GetRegionDTO">
+		SELECT r.regionName,
+			   r.regionDetail,
+			   i.filePath
+		  FROM region r
+		  JOIN regionImg i ON r.fileId = i.imageId
 	</select>
 	
 	<delete id="deleteRegions" parameterType="List">

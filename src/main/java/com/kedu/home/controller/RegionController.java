@@ -6,13 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kedu.home.dto.AddRegionDTO;
+import com.kedu.home.dto.GetRegionDTO;
 import com.kedu.home.dto.RegionDTO;
+import com.kedu.home.services.FileService;
 import com.kedu.home.services.RegionService;
 
 @RestController
@@ -22,22 +26,26 @@ public class RegionController {
 	@Autowired
 	public RegionService regionServ;
 	
+	@Autowired
+	public FileService fileServ;
+	
 	@PostMapping
-	public ResponseEntity<?> insertRegion(@RequestBody RegionDTO dto){
+	public ResponseEntity<?> insertRegion(@ModelAttribute AddRegionDTO dto){
 	    try {
 	        regionServ.insertRegion(dto);
 	        return ResponseEntity.ok().build();
 	    } catch (IllegalArgumentException e) {
-	        return ResponseEntity.badRequest().body(e.getMessage());  // HTTP 400
+	        return ResponseEntity.badRequest().body(e.getMessage());  
 	    } catch (Exception e) {
+	    	e.printStackTrace();
 	        return ResponseEntity.status(500).body("서버 오류가 발생했습니다.");
 	    }
 	}
 
 	
 	@GetMapping
-	public ResponseEntity<List<RegionDTO>> selectRegionList(){
-		List<RegionDTO> list = regionServ.selectRegionList();
+	public ResponseEntity<List<GetRegionDTO>> selectRegionList(){
+		List<GetRegionDTO> list = regionServ.selectRegionList();
 		return ResponseEntity.ok(list); 
 	}
 	

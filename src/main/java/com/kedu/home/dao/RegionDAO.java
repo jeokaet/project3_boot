@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kedu.home.dto.GetRegionDTO;
 import com.kedu.home.dto.RegionDTO;
 
 @Repository
@@ -18,8 +19,8 @@ public class RegionDAO {
 		mybatis.insert("RegionMapper.insertRegion", dto);
 	}
 	
-	public List<RegionDTO> selectRegionList(){
-		List<RegionDTO> list = mybatis.selectList("RegionMapper.selectRegionList");
+	public List<GetRegionDTO> selectRegionList(){
+		List<GetRegionDTO> list = mybatis.selectList("RegionMapper.selectRegionList");
 		return list;
 	}
 	
