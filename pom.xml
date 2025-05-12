@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.15.3</version> <!-- 또는 프로젝트에 맞는 버전 -->
+			<version>2.15.3</version> <!-- 또는 프로젝트에 맞는 버전e -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
