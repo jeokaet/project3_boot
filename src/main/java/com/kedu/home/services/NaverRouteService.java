@@ -36,9 +36,9 @@ public class NaverRouteService {
 		 if (startX == 0 || startY == 0 || goalList == null || goalList.isEmpty()) {
 		        return "{\"error\": \"Start or Goal is null\"}";
 		    }
-		 StringBuilder urlBuilder = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?");
+		 StringBuilder urlBuilder = new StringBuilder("https://maps.apigw.ntruss.com/map-direction-15/v1/driving?");
 	        urlBuilder.append("start=").append(startX).append(",").append(startY);
-	        
+
 	        for (Map<String, Double> goal : goalList) { try {
 	            String encodedGoal = URLEncoder.encode(goal.get("x") + "," + goal.get("y"), "UTF-8");
 	            urlBuilder.append("&goal=").append(encodedGoal);
