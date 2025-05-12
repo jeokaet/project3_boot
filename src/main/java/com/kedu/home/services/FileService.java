@@ -1,6 +1,5 @@
 package com.kedu.home.services;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +13,9 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.kedu.home.dao.FileDAO;
+import com.kedu.home.dto.AddRegionDTO;
+import com.kedu.home.dto.FileDTO;
 
 
 @Service
@@ -22,16 +24,36 @@ public class FileService {
 	@Autowired
 	private Storage storage;
 	
+	@Autowired
+	private FileDAO fileDao;
+	
 	@Value("${gcs.bucket.name}")
 	private String bucketName;
 
-	public void upload(MultipartFile file) throws Exception{
+	public int upload(AddRegionDTO dto) throws Exception{
+		MultipartFile file = dto.getFile();
+		System.out.println("파일 이름 : " + file.getOriginalFilename());
+
 		String sysName = UUID.randomUUID() + " _ "+file.getOriginalFilename();
 		
 		BlobId blobId = BlobId.of(bucketName, sysName);
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
 				
 		storage.create(blobInfo, file.getBytes());
+
+		
+		String filePath = String.format("https://storage.googleapis.com/%s/%s", bucketName, sysName);
+
+		
+		FileDTO fileDto = new FileDTO();
+		fileDto.setSysname(sysName);
+		fileDto.setOriname(file.getOriginalFilename());
+		fileDto.setFilePath(filePath);
+		
+		int imageId = fileDao.saveImage(fileDto);
+		
+		return imageId;
+		
 	}
 
 	public List<String> getListfiles() throws Exception {

@@ -22,8 +22,8 @@ public class AuthService {
 	    if (mDAO.existsByLoginId(dto.getLoginId())) {
 	        return false;
 	    }
-	    String encryptedPw = SHA512Util.encrypt(dto.getLoginPw());
-	    dto.setLoginPw(encryptedPw);
+	    String encryptedPw = SHA512Util.encrypt(dto.getPw());
+	    dto.setPw(encryptedPw);
 	    return mDAO.insertMember(dto);
 	}
 }

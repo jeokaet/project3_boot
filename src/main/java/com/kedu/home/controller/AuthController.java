@@ -24,8 +24,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody MemberDTO dto) {
+    
+    	System.out.println("넘겨받은 값 : " + dto);
         String id = dto.getLoginId();
-        String pw = dto.getLoginPw();
+        String pw = dto.getPw();
+        System.out.println("아이디 : " + id + ", 패스워드 : " + pw);
 
         if (aServ.isAvailableIdAndPw(id, pw)) {
             String token = jwt.createToken(id);
