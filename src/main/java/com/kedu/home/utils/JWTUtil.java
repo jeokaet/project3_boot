@@ -22,7 +22,7 @@ public class JWTUtil {
 		
 		Algorithm algorithm = Algorithm.HMAC256(secret);
 		Date now = new Date();
-		Date expiresAt = new Date(now.getTime()+4320000);
+		Date expiresAt = new Date(now.getTime()+43200000);
 		return JWT.create().withSubject(id)
 				.withIssuedAt(now)
 				.withExpiresAt(expiresAt)
