@@ -53,6 +53,9 @@ public class GeminiService {
 
             // ✅ 마크다운 블록 제거
             String cleaned = content.replaceAll("(?s)```json\\s*|```", "").trim();
+            
+            
+            
 
             return cleaned;
         } catch (Exception e) {

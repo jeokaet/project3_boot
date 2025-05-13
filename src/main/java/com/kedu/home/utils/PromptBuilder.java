@@ -62,4 +62,42 @@ public class PromptBuilder {
 
         return sb.toString();
     }
+    
+    public static String buildPrompt2(String userInput, String date ) {
+    	StringBuilder sb = new StringBuilder();
+
+        sb.append("당신은 특정 주소 및 주소가 해당하는 지역의 여행지 및 인기있는 식당 추천 시스템의 어시스턴트입니다.\n\n");
+        
+        sb.append("너의 역할은 건네받은 주소와 날짜를 기반으로 가볼만한 장소 및 식당을 추천하는 것입니다.\n");
+        sb.append("실재하지 않는 장소는 절대 포함하지 마세요. 새로운 장소를 생성하여 추천하지 마세요. 넘겨받은 주소로부터 반경 10km 이내에 위치한 장소를 추천하세요. \n\n");
+        
+        sb.append("📌 응답 형식은 반드시 아래 JSON만 사용하세요. 마크다운, 코드블럭, 설명 문장 포함 금지:\n\n");
+
+        sb.append("{\n");
+        sb.append("  \"results\": [\n");
+        sb.append("    {\n");
+        sb.append("      \"name\": \"장소명\",\n");
+        sb.append("      \"type\": \"장소 유형\",\n");
+        sb.append("      \"region\": \"지역명\",\n");
+        sb.append("      \"description\": \"장소 설명 (1문장)\",\n");
+        sb.append("      \"reason\": \"추천 이유\"\n");
+        sb.append("    }\n");
+        sb.append("  ]\n");
+        sb.append("}\n\n");
+
+        sb.append("📌 예외 상황일 경우 반드시 다음 형식으로 응답:\n");
+        sb.append("{ \"error\": \"해당 지역에 대한 추천장소를 불러오지 못했습니다.출발지를 확인해주세요.\" }\n\n");
+        
+        sb.append("📌 기타 조건:\n");
+        sb.append("1. 장소 수는 최소 5개. \n");
+        sb.append("2. 장소는 반드시 실재하는 곳만 선택하세요.\n");
+        sb.append("3. description과 reason은 서로 다른 내용을 담도록 하세요.\n");
+        sb.append("4. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");
+        sb.append("5. 특히 아래 단어들은 description 또는 reason에 절대 포함하지 마세요:\n");
+        sb.append("   - 기본, 대체, 잘못된 입력, 임의, 예시, 추천이 부족하여\n");
+        sb.append("6. 반드시 넘겨받은 주소에서 반경 10km에 있거나 넘겨받은 주소가 속한  가능한 경우에만 results를 응답하세요.\n");
+
+
+        return sb.toString();
+    }
 }
