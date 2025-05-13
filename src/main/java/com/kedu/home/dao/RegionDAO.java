@@ -24,6 +24,12 @@ public class RegionDAO {
 		return list;
 	}
 	
+	public List<GetRegionDTO> searchByRegionName(String searchWord){
+		List<GetRegionDTO> list = mybatis.selectList("RegionMapper.searchByRegionName");
+		System.out.println("검색결과 : " + list);
+		return list;
+	}
+	
 	public void deleteRegions(List<Integer> idList) {
 		mybatis.delete("RegionMapper.deleteRegions", idList);
 	}

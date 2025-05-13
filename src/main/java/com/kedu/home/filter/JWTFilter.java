@@ -29,8 +29,10 @@ public class JWTFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		String uri = request.getRequestURI();
-	    if (uri.startsWith("/region")) {
-	        filterChain.doFilter(request, response);
+	    
+	    // ✅ 토큰 없이 허용할 경로 설정
+	    if (uri.startsWith("/region") && request.getMethod().equals("GET")) {
+	        filterChain.doFilter(request, response);  // 토큰 없이 통과
 	        return;
 	    }
 
