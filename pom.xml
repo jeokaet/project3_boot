@@ -84,30 +84,30 @@
          <version>2.32.0</version>
       </dependency>
 
-		<dependency>
-			<groupId>com.auth0</groupId>
-			<artifactId>java-jwt</artifactId>
-			<version>4.4.0</version>
-		</dependency>
-		<!-- 조휘영 -->
-		<!-- ✅ OkHttp: HTTP 요청용 -->
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.12.0</version> <!-- 또는 최신 버전 -->
-		</dependency>
+      <dependency>
+         <groupId>com.auth0</groupId>
+         <artifactId>java-jwt</artifactId>
+         <version>4.4.0</version>
+      </dependency>
+      <!-- 조휘영 -->
+      <!-- ✅ OkHttp: HTTP 요청용 -->
+      <dependency>
+         <groupId>com.squareup.okhttp3</groupId>
+         <artifactId>okhttp</artifactId>
+         <version>4.12.0</version> <!-- 또는 최신 버전 -->
+      </dependency>
 
-		<!-- ✅ Jackson: JSON 파싱용 -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.15.3</version> <!-- 또는 프로젝트에 맞는 버전e -->
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<!-- 조휘영 -->
+      <!-- ✅ Jackson: JSON 파싱용 -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <version>2.15.3</version> <!-- 또는 프로젝트에 맞는 버전e -->
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-actuator</artifactId>
+      </dependency>
+      <!-- 조휘영 -->
 
    </dependencies>
 

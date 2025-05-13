@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kedu.home.dto.AddRegionDTO;
@@ -46,6 +47,14 @@ public class RegionController {
 	@GetMapping
 	public ResponseEntity<List<GetRegionDTO>> selectRegionList(){
 		List<GetRegionDTO> list = regionServ.selectRegionList();
+		return ResponseEntity.ok(list); 
+	}
+	
+	@GetMapping("/searchByRegionName")
+	public ResponseEntity<List<GetRegionDTO>> searchByRegionName(@RequestParam String searchWord){
+		System.out.println("검색어 : " + searchWord);
+		List<GetRegionDTO> list = regionServ.searchByRegionName(searchWord);
+		System.out.println("컨트롤러 : " + list.get(0).getRegionName());
 		return ResponseEntity.ok(list); 
 	}
 	

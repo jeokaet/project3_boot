@@ -26,5 +26,16 @@
 	<update id="updateRegion" parameterType="com.kedu.home.dto.RegionDTO">
 		UPDATE region SET regionName=#{regionName}, regionDetail = #{regionDetail}, fileId = null WHERE regionId=${regionId}
 	</update>
+	
+	<select id="searchByRegionName" resultType="com.kedu.home.dto.RegionDTO">
+	  SELECT 
+	    r.regionId,
+	    r.regionName,
+	    r.fileId,
+	    i.filePath
+	  FROM region r
+	  JOIN regionImg i ON r.fileId = i.imageId
+	  WHERE r.regionName LIKE '%' || #{searchWord} || '%'
+	</select>
 
 </mapper>
