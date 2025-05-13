@@ -41,6 +41,10 @@ public class RegionService {
 		return rDao.selectRegionList();
 	}
 	
+	public List<GetRegionDTO> searchByRegionName(String searchWord){
+		return rDao.searchByRegionName(searchWord);
+	}
+	
 	public void deleteRegions(List<Integer> idList) {
 		rDao.deleteRegions(idList);
 	}
