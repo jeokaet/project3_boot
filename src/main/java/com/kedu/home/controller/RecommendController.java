@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kedu.home.dto.LLMRequestDTO;
 import com.kedu.home.services.GeminiService;
+import com.kedu.home.services.PerspectiveService;
 import com.kedu.home.utils.AbuseFilterUtils;
 import com.kedu.home.utils.PromptBuilder;
 
@@ -26,13 +27,20 @@ public class RecommendController {
 
 	@Autowired
 	private GeminiService GServ;
+	
+	@Autowired
+	private PerspectiveService PServ;
+	
 
 	@PostMapping("/llm-recommend")
 	public ResponseEntity<?> recommendPlaces(@RequestBody LLMRequestDTO request) {
 		try {
-			if(AbuseFilterUtils.isAbusiveOnly(request.getUserInput())) {
-				return ResponseEntity.ok(Map.of("error","요청이 불명확하다."));
-			}
+			String userInput = request.getUserInput();
+			
+			 if (PServ.isToxic(userInput) || AbuseFilterUtils.isAbusiveOnly(userInput)) {
+		            return ResponseEntity.ok(Map.of(
+		                "error", "입력에 욕설 및 공격적인 표현이 들어가 있어 추천을 중단합니다."));
+		        }
 			
 			
 			String prompt = PromptBuilder.buildPrompt(request.getUserInput(), request.getExamplePlaces());
