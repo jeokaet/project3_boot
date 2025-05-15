@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="MypageMapper">
+	<select id = "getMembers" resultType="com.kedu.home.dto.MemberDTO">
+		select * from members where loginid = #{loginId}
+	</select>
+	<update id="updateMember" parameterType="com.kedu.home.dto.MemberDTO">
+		update members set email=#{email}, address1= #{address1}, userName= #{userName}, agreement = #{agreement}
+		where loginId = #{loginId}
+	</update>
+	<delete id="deleteMember">
+		delete from members where loginId = #{loginId}
+	</delete>
+</mapper>
