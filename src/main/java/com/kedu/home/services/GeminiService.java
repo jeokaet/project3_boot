@@ -14,7 +14,12 @@ import okhttp3.*;
 @Service
 public class GeminiService {
 
-    private final OkHttpClient client = new OkHttpClient();
+	private final OkHttpClient client = new OkHttpClient.Builder()
+		    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)     // 연결 시도 제한 시간
+		    .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)        // 서버 응답 기다리는 시간
+		    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)       // 요청 바디 전송 제한 시간
+		    .build();
+
 
     @Value("${gemini.api.key}")
     private String apiKey;
@@ -30,6 +35,7 @@ public class GeminiService {
                         Map.of("parts", new Object[] { Map.of("text", prompt) })
                 })
         );
+        
 
         Request request = new Request.Builder()
                 .url(url)

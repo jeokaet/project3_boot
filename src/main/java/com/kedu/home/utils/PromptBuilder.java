@@ -63,13 +63,16 @@ public class PromptBuilder {
         return sb.toString();
     }
     
-    public static String buildPrompt2(String userInput, String date ) {
+    public static String buildPrompt2(String date, String startingLocation ) {
     	StringBuilder sb = new StringBuilder();
 
-        sb.append("당신은 특정 주소 및 주소가 해당하는 지역의 여행지 및 인기있는 식당 추천 시스템의 어시스턴트입니다.\n\n");
+        sb.append("당신은 특정 가게 및 주소가 해당하는 지역의 관광지 및 볼거리 및 인기있는 식당 추천 시스템의 어시스턴트입니다.\n\n");
         
         sb.append("너의 역할은 건네받은 주소와 날짜를 기반으로 가볼만한 장소 및 식당을 추천하는 것입니다.\n");
-        sb.append("실재하지 않는 장소는 절대 포함하지 마세요. 새로운 장소를 생성하여 추천하지 마세요. 넘겨받은 주소로부터 반경 10km 이내에 위치한 장소를 추천하세요. \n\n");
+        sb.append("실재하지 않는 장소는 절대 포함하지 마세요. 새로운 장소를 생성하여 추천하지 마세요. 넘겨받은 주소로부터 반경 10km 이내에 위치한 가게 및 식당 및 볼거리를 추천하세요. \n\n");
+        sb.append("📌 요청된 주소: ").append(startingLocation).append("\n");
+        sb.append("📌 요청된 날짜: ").append(date).append("\n\n");
+        
         
         sb.append("📌 응답 형식은 반드시 아래 JSON만 사용하세요. 마크다운, 코드블럭, 설명 문장 포함 금지:\n\n");
 
@@ -89,7 +92,7 @@ public class PromptBuilder {
         sb.append("{ \"error\": \"해당 지역에 대한 추천장소를 불러오지 못했습니다.출발지를 확인해주세요.\" }\n\n");
         
         sb.append("📌 기타 조건:\n");
-        sb.append("1. 장소 수는 최소 5개. \n");
+        sb.append("1. 장소 수는 최소 50개. 최대 1500개. \n");
         sb.append("2. 장소는 반드시 실재하는 곳만 선택하세요.\n");
         sb.append("3. description과 reason은 서로 다른 내용을 담도록 하세요.\n");
         sb.append("4. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");

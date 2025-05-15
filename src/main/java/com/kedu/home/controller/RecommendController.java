@@ -66,13 +66,13 @@ public class RecommendController {
 	}
 	
 	
-	@GetMapping("/getList")
+	@PostMapping("/getList")
 	public ResponseEntity<?> getPlaceList(@RequestBody getPlaceListDTO request) {
 		try {
 			if(AbuseFilterUtils.isAbusiveOnly(request.getStartingLocation())) {
 				return ResponseEntity.ok(Map.of("error","요청이 불명확하다."));
 			}
-			
+			System.out.println("요청 확인 : " + request.getStartingLocation() + " / 날짜 : " + request.getDate());
 			
 			String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
 
@@ -93,6 +93,8 @@ public class RecommendController {
 
 			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
 			});
+			
+			System.out.println("컨틀롤러에서 확인 : " + results);
 
 			return ResponseEntity.ok(Map.of("results", results));
 
