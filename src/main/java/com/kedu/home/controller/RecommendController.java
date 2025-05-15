@@ -34,6 +34,7 @@ public class RecommendController {
 	
 	@Autowired
 	private GooglePlaceApiService googlePlaceService;
+
 	
 
 	@PostMapping("/llm-recommend")
@@ -131,5 +132,6 @@ public class RecommendController {
 		}
 	}
 	
+
 	
 }
