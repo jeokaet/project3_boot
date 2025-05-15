@@ -6,18 +6,27 @@ public class PlaceDTO {
 	private String region;
 	private String description;
 	private String reason;
+	private String latitude;
+	private String longitude;
+	private String imageUrl;
 
 	public PlaceDTO() {
 	}
 
-	public PlaceDTO(String name, String type, String region, String description, String reason) {
+	
+	public PlaceDTO(String name, String type, String region, String description, String reason, String latitude,
+			String longitude, String imageUrl) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.region = region;
 		this.description = description;
 		this.reason = reason;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.imageUrl = imageUrl;
 	}
+
 
 	public String getName() {
 		return name;
@@ -59,10 +68,29 @@ public class PlaceDTO {
 		this.reason = reason;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("PlaceDTO{name='%s', type='%s', region='%s', description='%s', reason='%s'}", name, type,
-				region, description, reason);
+	public String getLatitude() {
+		return latitude;
 	}
 
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	
 }

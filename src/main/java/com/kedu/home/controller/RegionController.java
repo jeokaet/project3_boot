@@ -52,9 +52,7 @@ public class RegionController {
 	
 	@GetMapping("/searchByRegionName")
 	public ResponseEntity<List<GetRegionDTO>> searchByRegionName(@RequestParam String searchWord){
-		System.out.println("검색어 : " + searchWord);
 		List<GetRegionDTO> list = regionServ.searchByRegionName(searchWord);
-		System.out.println("컨트롤러 : " + list.get(0).getRegionName());
 		return ResponseEntity.ok(list); 
 	}
 	

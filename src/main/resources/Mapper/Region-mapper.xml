@@ -27,15 +27,15 @@
 		UPDATE region SET regionName=#{regionName}, regionDetail = #{regionDetail}, fileId = null WHERE regionId=${regionId}
 	</update>
 	
-	<select id="searchByRegionName" resultType="com.kedu.home.dto.RegionDTO">
+	<select id="searchByRegionName" resultType="com.kedu.home.dto.GetRegionDTO" parameterType="String">
 	  SELECT 
 	    r.regionId,
 	    r.regionName,
-	    r.fileId,
+	    r.regionDetail,
 	    i.filePath
 	  FROM region r
 	  JOIN regionImg i ON r.fileId = i.imageId
-	  WHERE r.regionName LIKE '%' || #{searchWord} || '%'
+	  WHERE r.regionName LIKE '%' ||#{searchWord, jdbcType=VARCHAR}|| '%'
 	</select>
 
 </mapper>
