@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kedu.home.dto.LLMRequestDTO;
 import com.kedu.home.dto.getPlaceListDTO;
 import com.kedu.home.services.GeminiService;
+import com.kedu.home.services.GooglePlaceApiService;
 import com.kedu.home.services.PerspectiveService;
 import com.kedu.home.utils.AbuseFilterUtils;
 import com.kedu.home.utils.PromptBuilder;
@@ -31,6 +31,9 @@ public class RecommendController {
 	
 	@Autowired
 	private PerspectiveService PServ;
+	
+	@Autowired
+	private GooglePlaceApiService googlePlaceService;
 	
 
 	@PostMapping("/llm-recommend")
@@ -59,7 +62,7 @@ public class RecommendController {
 
 			JsonNode resultsNode = root.get("results");
 			if (resultsNode == null || !resultsNode.isArray()) {
-				return ResponseEntity.ok(Map.of("error", "추천할 만한 장소가 없습니다."));
+				return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
 			}
 
 			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
@@ -80,7 +83,6 @@ public class RecommendController {
 			if(AbuseFilterUtils.isAbusiveOnly(request.getStartingLocation())) {
 				return ResponseEntity.ok(Map.of("error","요청이 불명확하다."));
 			}
-			System.out.println("요청 확인 : " + request.getStartingLocation() + " / 날짜 : " + request.getDate());
 			
 			String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
 
@@ -96,13 +98,30 @@ public class RecommendController {
 
 			JsonNode resultsNode = root.get("results");
 			if (resultsNode == null || !resultsNode.isArray()) {
-				return ResponseEntity.ok(Map.of("error", "추천할 만한 장소가 없습니다."));
+				return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
 			}
 
 			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
 			});
 			
-			System.out.println("컨틀롤러에서 확인 : " + results);
+			
+			for (Map<String, String> place : results) {
+			    String lat = place.get("latitude");
+			    String lng = place.get("longitude");
+
+			    // 기존 imageUrl 값이 null이거나 "null" 문자열인 경우에만 호출
+			    String currentImage = place.get("imageUrl");
+			    if (currentImage == null || currentImage.equals("null")) {
+
+			        // ⛳ Google Places API 통해 대표 이미지 URL 가져오기
+			        String imageUrl = googlePlaceService.getImageUrl(lat, lng);
+
+			        // 💾 결과 map에 다시 저장
+			        place.put("imageUrl", imageUrl != null ? imageUrl : null);
+			    }
+			}
+			
+			System.out.println("컨트롤러에서 확인 : " + results);
 
 			return ResponseEntity.ok(Map.of("results", results));
 

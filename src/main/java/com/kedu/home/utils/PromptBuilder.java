@@ -33,7 +33,8 @@ public class PromptBuilder {
         sb.append("      \"type\": \"장소 유형\",\n");
         sb.append("      \"region\": \"지역명\",\n");
         sb.append("      \"description\": \"장소 설명 (1문장)\",\n");
-        sb.append("      \"reason\": \"추천 이유\"\n");
+        sb.append("      \"reason\": \"추천 이유\",\n");
+        sb.append("      \"imageUrl\": \"이미지파일경로\"\n");
         sb.append("    }\n");
         sb.append("  ]\n");
         sb.append("}\n\n");
@@ -57,7 +58,7 @@ public class PromptBuilder {
         for (int i = 0; i < places.size(); i++) {
             PlaceDTO p = places.get(i);
             sb.append(String.format("%d. %s (%s, %s) - %s / %s\n",
-                    i + 1, p.getName(), p.getType(), p.getRegion(), p.getDescription(), p.getReason()));
+                    i + 1, p.getName(), p.getType(), p.getRegion(), p.getDescription(), p.getReason(), p.getImageUrl()));
         }
 
         return sb.toString();
@@ -83,7 +84,10 @@ public class PromptBuilder {
         sb.append("      \"type\": \"장소 유형\",\n");
         sb.append("      \"region\": \"지역명\",\n");
         sb.append("      \"description\": \"장소 설명 (1문장)\",\n");
-        sb.append("      \"reason\": \"추천 이유\"\n");
+        sb.append("      \"reason\": \"추천 이유\",\n");
+        sb.append("      \"latitude\": \"위도\",\n");
+        sb.append("      \"longitude\": \"경도\",\n");
+        sb.append("      \"imageUrl\": \"null\"\n");
         sb.append("    }\n");
         sb.append("  ]\n");
         sb.append("}\n\n");

@@ -25,8 +25,9 @@ public class RegionDAO {
 	}
 	
 	public List<GetRegionDTO> searchByRegionName(String searchWord){
-		List<GetRegionDTO> list = mybatis.selectList("RegionMapper.searchByRegionName");
-		System.out.println("검색결과 : " + list);
+		System.out.println("DAO 에서 검색어 : " + searchWord);
+		List<GetRegionDTO> list = mybatis.selectList("RegionMapper.searchByRegionName", searchWord);
+
 		return list;
 	}
 	
