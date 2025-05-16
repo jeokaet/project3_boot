@@ -6,16 +6,17 @@ public class PlaceDTO {
 	private String region;
 	private String description;
 	private String reason;
-	private String latitude;
-	private String longitude;
+	private double latitude;
+	private double longitude;
 	private String imageUrl;
 
+	
 	public PlaceDTO() {
 	}
 
 	
-	public PlaceDTO(String name, String type, String region, String description, String reason, String latitude,
-			String longitude, String imageUrl) {
+	public PlaceDTO(String name, String type, String region, String description, String reason, double latitude,
+			double longitude, String imageUrl) {
 		super();
 		this.name = name;
 		this.type = type;
@@ -68,19 +69,19 @@ public class PlaceDTO {
 		this.reason = reason;
 	}
 
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -92,5 +93,7 @@ public class PlaceDTO {
 		this.imageUrl = imageUrl;
 	}
 
+	
+	
 	
 }
