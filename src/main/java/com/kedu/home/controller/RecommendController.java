@@ -109,7 +109,7 @@ public class RecommendController {
                     place.put("imageUrl", imageUrl != null ? imageUrl : null);
                 }
             }
-            long end = System.currentTimeMillis(); // 끝 시간 기록
+            long end = System.currentTimeMillis(); // 끝 시간 기록d
             long duration = end - start;
             System.out.println("⏱️ 전체 응답 소요 시간: " + duration + "ms");
             
