@@ -58,7 +58,7 @@ public class GeminiService {
             String body = response.body().string();
             System.out.println("🔵 Gemini 응답 원문:\n" + body);
 
-            JsonNode json = mapper.readTree(body);
+            JsonNode json = mapper.readTree(body);  // 여기서 에러나는 중
             String content = json.at("/candidates/0/content/parts/0/text").asText();
             System.out.println("🟢 추출된 LLM 텍스트:\n" + content);
             

@@ -114,9 +114,10 @@ public class PromptBuilder {
         sb.append("{ \"error\": \"리스트 필터링 중 오류 발생\" }\n\n");
         
         sb.append("📌 기타 참고 조건:\n");
-        sb.append("4. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");
-        sb.append("5. 특히 아래 단어들은 description 또는 reason에 절대 포함하지 마세요:\n");
+        sb.append("1. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");
+        sb.append("2. 특히 아래 단어들은 description 또는 reason에 절대 포함하지 마세요:\n");
         sb.append("   - 기본, 대체, 잘못된 입력, 임의, 예시, 추천이 부족하여\n");
+//        sb.append("3. 마지막으로 리스트에 최대 5개의 장소만 남기고 다 삭제하세요.\n");
 
         sb.append("장소 리스트:\n");
         for (int i = 0; i < results.size(); i++) {

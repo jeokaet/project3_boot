@@ -188,10 +188,15 @@ public class GooglePlaceApiService {
             String prompt = PromptBuilder.buildPrompt2(results, dateStr);
             String llmRaw = geminiServ.call(prompt);
             String llmCleaned = JsonCleanUtils.removeJsonComments(llmRaw);
+            
+            String cleaned = llmRaw
+                    .replaceAll("(?s)```json\\s*|```", "")  // ```json 제거
+                    .replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "") // 기타 제어문자 제거
+                    .replaceAll("[\\r\\n\\t]", " ") // 줄바꿈 계열은 공백으로 변환
+                    .trim();
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(llmCleaned);
-
             JsonNode resultsNode = root.get("results");
             
 
@@ -201,6 +206,7 @@ public class GooglePlaceApiService {
             long end = System.currentTimeMillis(); // 끝 시간 기록d
             long duration = end - start;
             System.out.println("⏱️ 전체 응답 소요 시간: " + duration + "ms");
+            
             
 
             return filteredResults;
