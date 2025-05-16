@@ -34,6 +34,8 @@ public class PromptBuilder {
         sb.append("      \"region\": \"지역명\",\n");
         sb.append("      \"description\": \"장소 설명 (1문장)\",\n");
         sb.append("      \"reason\": \"추천 이유\",\n");
+        sb.append("      \"latitude\": \"위도\",\n");
+        sb.append("      \"longitude\": \"경도\",\n");
         sb.append("      \"imageUrl\": \"이미지파일경로\"\n");
         sb.append("    }\n");
         sb.append("  ]\n");
