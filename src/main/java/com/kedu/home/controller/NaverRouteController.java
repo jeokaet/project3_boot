@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kedu.home.services.KakaoRouteService;
 import com.kedu.home.services.NaverRouteService;
 import com.kedu.home.services.TmapRouteService;
 
@@ -25,6 +26,9 @@ public class NaverRouteController {
 	
 	@Autowired
 	private NaverRouteService naverRouteService;
+	
+	@Autowired
+	private KakaoRouteService kServ;
 	
 	@Autowired
 	private TmapRouteService tmapRouteService;
@@ -52,6 +56,19 @@ public class NaverRouteController {
 	  
 	    return ResponseEntity.ok(result);
 	
+	}
+	
+	@GetMapping("/kakaoRoute")
+	public ResponseEntity<String> getKakaoRoute(
+	        @RequestParam String origin,                 
+	        @RequestParam String destination,            
+	        @RequestParam(required = false) String waypoints,  
+	        @RequestParam(defaultValue = "RECOMMEND") String priority,
+	        @RequestParam(defaultValue = "false") boolean alternatives,
+	        @RequestParam(defaultValue = "false") boolean summary
+	) {
+	    String response = kServ.getRoute(origin, destination, waypoints, priority, alternatives, summary);
+	    return ResponseEntity.ok(response);
 	}
 	
 	
