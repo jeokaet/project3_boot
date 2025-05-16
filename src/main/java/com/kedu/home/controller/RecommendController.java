@@ -1,6 +1,5 @@
 package com.kedu.home.controller;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -21,117 +20,108 @@ import com.kedu.home.services.GooglePlaceApiService;
 import com.kedu.home.services.PerspectiveService;
 import com.kedu.home.utils.AbuseFilterUtils;
 import com.kedu.home.utils.PromptBuilder;
+import com.kedu.home.utils.JsonCleanUtils;
 
 @RestController
 @RequestMapping("/api")
 public class RecommendController {
 
-	@Autowired
-	private GeminiService GServ;
-	
-	@Autowired
-	private PerspectiveService PServ;
-	
-	@Autowired
-	private GooglePlaceApiService googlePlaceService;
+    @Autowired
+    private GeminiService GServ;
 
-	
+    @Autowired
+    private PerspectiveService PServ;
 
-	@PostMapping("/llm-recommend")
-	public ResponseEntity<?> recommendPlaces(@RequestBody LLMRequestDTO request) {
-		try {
-			String userInput = request.getUserInput();
-			
-			 if (PServ.isToxic(userInput) || AbuseFilterUtils.isAbusiveOnly(userInput)) {
-		            return ResponseEntity.ok(Map.of(
-		                "error", "입력에 욕설 및 공격적인 표현이 들어가 있어 추천을 중단합니다."));
-		        }
-			
-			
-			String prompt = PromptBuilder.buildPrompt(request.getUserInput(), request.getExamplePlaces());
+    @Autowired
+    private GooglePlaceApiService googlePlaceService;
 
-			String llmResponse = GServ.call(prompt) ; // cleaned JSON string
-			System.out.println("🟢 최종 클린 JSON:\n" + llmResponse);
+    @PostMapping("/llm-recommend")
+    public ResponseEntity<?> recommendPlaces(@RequestBody LLMRequestDTO request) {
+        try {
+            String userInput = request.getUserInput();
 
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(llmResponse);
+            if (PServ.isToxic(userInput) || AbuseFilterUtils.isAbusiveOnly(userInput)) {
+                return ResponseEntity.ok(Map.of(
+                        "error", "입력에 욕설 및 공격적인 표현이 들어가 있어 추천을 중단합니다."));
+            }
 
-			if (root.has("error")) {
-				// Gemini 응답에 error가 있으면 그대로 전달
-				return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
-			}
+            String prompt = PromptBuilder.buildPrompt(userInput, request.getExamplePlaces());
 
-			JsonNode resultsNode = root.get("results");
-			if (resultsNode == null || !resultsNode.isArray()) {
-				return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
-			}
+            String llmResponse = GServ.call(prompt); // LLM 응답
+            llmResponse = JsonCleanUtils.removeJsonComments(llmResponse); // 🧼 주석 제거
 
-			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
-			});
+            System.out.println("🟢 최종 클린 JSON:\n" + llmResponse);
 
-			return ResponseEntity.ok(Map.of("results", results));
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(llmResponse);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body(Map.of("error", "LLM 호출 실패"));
-		}
-	}
-	
-	
-	@PostMapping("/getList")
-	public ResponseEntity<?> getPlaceList(@RequestBody getPlaceListDTO request) {
-		try {
-			if(AbuseFilterUtils.isAbusiveOnly(request.getStartingLocation())) {
-				return ResponseEntity.ok(Map.of("error","요청이 불명확하다."));
-			}
-			
-			String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
+            if (root.has("error")) {
+                return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
+            }
 
-			String llmResponse2 = GServ.call(prompt); // cleaned JSON string
-			System.out.println("🟢 최종 클린 JSON:\n" + llmResponse2);
+            JsonNode resultsNode = root.get("results");
+            if (resultsNode == null || !resultsNode.isArray()) {
+                return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
+            }
 
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(llmResponse2);
+            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
+            });
 
-			if (root.has("error")) {
-				return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
-			}
+            return ResponseEntity.ok(Map.of("results", results));
 
-			JsonNode resultsNode = root.get("results");
-			if (resultsNode == null || !resultsNode.isArray()) {
-				return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
-			}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "LLM 호출 실패"));
+        }
+    }
 
-			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
-			});
-			
-			
-			for (Map<String, String> place : results) {
-			    String lat = place.get("latitude");
-			    String lng = place.get("longitude");
+    @PostMapping("/getList")
+    public ResponseEntity<?> getPlaceList(@RequestBody getPlaceListDTO request) {
+        try {
+            if (AbuseFilterUtils.isAbusiveOnly(request.getStartingLocation())) {
+                return ResponseEntity.ok(Map.of("error", "요청이 불명확하다."));
+            }
 
-			    // 기존 imageUrl 값이 null이거나 "null" 문자열인 경우에만 호출
-			    String currentImage = place.get("imageUrl");
-			    if (currentImage == null || currentImage.equals("null")) {
+            String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
 
-			        // ⛳ Google Places API 통해 대표 이미지 URL 가져오기
-			        String imageUrl = googlePlaceService.getImageUrl(lat, lng);
+            String llmResponse2 = GServ.call(prompt);
+            llmResponse2 = JsonCleanUtils.removeJsonComments(llmResponse2); // 🧼 주석 제거
 
-			        // 💾 결과 map에 다시 저장
-			        place.put("imageUrl", imageUrl != null ? imageUrl : null);
-			    }
-			}
-			
-			System.out.println("컨트롤러에서 확인 : " + results);
+            System.out.println("🟢 최종 클린 JSON:\n" + llmResponse2);
 
-			return ResponseEntity.ok(Map.of("results", results));
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(llmResponse2);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body(Map.of("error", "LLM 호출 실패"));
-		}
-	}
-	
+            if (root.has("error")) {
+                return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
+            }
 
-	
+            JsonNode resultsNode = root.get("results");
+            if (resultsNode == null || !resultsNode.isArray()) {
+                return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
+            }
+
+            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
+            });
+
+            for (Map<String, String> place : results) {
+                String lat = place.get("latitude");
+                String lng = place.get("longitude");
+
+                String currentImage = place.get("imageUrl");
+                if (currentImage == null || currentImage.equals("null")) {
+                    String imageUrl = googlePlaceService.getImageUrl(lat, lng);
+                    place.put("imageUrl", imageUrl != null ? imageUrl : null);
+                }
+            }
+
+            System.out.println("컨트롤러에서 확인 : " + results);
+
+            return ResponseEntity.ok(Map.of("results", results));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "LLM 호출 실패"));
+        }
+    }
 }
