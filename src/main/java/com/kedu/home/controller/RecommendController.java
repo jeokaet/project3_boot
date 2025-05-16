@@ -1,5 +1,6 @@
 package com.kedu.home.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +20,8 @@ import com.kedu.home.services.GeminiService;
 import com.kedu.home.services.GooglePlaceApiService;
 import com.kedu.home.services.PerspectiveService;
 import com.kedu.home.utils.AbuseFilterUtils;
-import com.kedu.home.utils.PromptBuilder;
 import com.kedu.home.utils.JsonCleanUtils;
+import com.kedu.home.utils.PromptBuilder;
 
 @RestController
 @RequestMapping("/api")
@@ -76,7 +77,11 @@ public class RecommendController {
                 return ResponseEntity.ok(Map.of("error", "요청이 불명확하다."));
             }
 
-            String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
+            String dateStr = request.getDate();
+            if (dateStr == null || dateStr.trim().isEmpty()) {
+                dateStr = LocalDate.now().toString(); // yyyy-MM-dd 형식s
+            }
+            String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), dateStr);
             String llmRaw = GServ.call(prompt);
             String llmCleaned = JsonCleanUtils.removeJsonComments(llmRaw);
 
