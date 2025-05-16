@@ -68,6 +68,21 @@ public class RecommendController {
 
 			List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
 			});
+			for (Map<String, String> place : results) {
+			    String lat = place.get("latitude");
+			    String lng = place.get("longitude");
+
+			    // 기존 imageUrl 값이 null이거나 "null" 문자열인 경우에만 호출
+			    String currentImage = place.get("imageUrl");
+			    if (currentImage == null || currentImage.equals("null")) {
+
+			        // ⛳ Google Places API 통해 대표 이미지 URL 가져오기
+			        String imageUrl = googlePlaceService.getImageUrl(lat, lng);
+
+			        // 💾 결과 map에 다시 저장
+			        place.put("imageUrl", imageUrl != null ? imageUrl : null);
+			    }
+			}
 
 			return ResponseEntity.ok(Map.of("results", results));
 
