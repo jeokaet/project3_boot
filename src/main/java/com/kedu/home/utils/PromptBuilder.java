@@ -75,8 +75,15 @@ public class PromptBuilder {
         sb.append("📌 참고할 날짜: ").append(date).append("\n\n");
         
         
-        sb.append("📌 응답 형식은 반드시 아래 JSON만 사용하세요. 마크다운, 코드블럭, 설명 문장 포함 금지:\n\n");
+        sb.append("❌ 절대 금지:\n");
+        sb.append("- 지도에 없는 장소 생성 금지\n");
+        sb.append("- JSON 외의 텍스트, 마크다운, 설명문, 코드블럭 포함 금지\n");
+        sb.append("- 주석 (//, /* */) 포함 금지\n");
+        sb.append("- 출력 규칙을 어기면 시스템이 응답을 폐기합니다\n");
+        sb.append("- 위반 시 다음과 같이 응답할 것: { \"error\": \"출력 형식이 잘못되었습니다.\" }\n\n");
 
+        sb.append("📌 응답 형식은 반드시 아래 JSON만 사용하세요. 마크다운, 코드블럭, 설명 문장 포함 금지:\n\n");
+        
         sb.append("{\n");
         sb.append("  \"results\": [\n");
         sb.append("    {\n");
@@ -102,7 +109,7 @@ public class PromptBuilder {
         sb.append("4. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");
         sb.append("5. 특히 아래 단어들은 description 또는 reason에 절대 포함하지 마세요:\n");
         sb.append("   - 기본, 대체, 잘못된 입력, 임의, 예시, 추천이 부족하여\n");
-        sb.append("6. 반드시 넘겨받은 주소에서 반경 10km에 있거나 넘겨받은 주소가 속한  가능한 경우에만 results를 응답하세요.\n");
+        sb.append("6. 반드시 넘겨받은 주소로부터 반경 10km 이내이거나, 해당 주소가 포함된 행정구역 내에 위치한 장소만 results에 포함하세요.\n");
         sb.append("7. 결과에는 정확한 위도 경도 값을 포함하는 경우에만 results를 응답하세요.\n");
 
 
