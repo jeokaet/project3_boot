@@ -68,11 +68,15 @@ public class NaverRouteController {
 	        @RequestParam String origin,                 
 	        @RequestParam String destination,            
 	        @RequestParam(required = false) String waypoints,  
-	        @RequestParam(defaultValue = "RECOMMEND") String priority,
+	        @RequestParam(defaultValue = "DISTANCE") String priority,
 	        @RequestParam(defaultValue = "false") boolean alternatives,
 	        @RequestParam(defaultValue = "false") boolean summary
 	) {
+		 System.out.println("origin: " + origin);
+		    System.out.println("destination: " + destination);
+		    System.out.println("waypoints: " + waypoints);
 	    String response = kServ.getRoute(origin, destination, waypoints, priority, alternatives, summary);
+	    System.out.println(response+"여기를봐");
 	    return ResponseEntity.ok(response);
 	}
 	
