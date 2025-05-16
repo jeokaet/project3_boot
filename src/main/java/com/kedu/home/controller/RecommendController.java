@@ -42,18 +42,15 @@ public class RecommendController {
 
             if (PServ.isToxic(userInput) || AbuseFilterUtils.isAbusiveOnly(userInput)) {
                 return ResponseEntity.ok(Map.of(
-                        "error", "입력에 욕설 및 공격적인 표현이 들어가 있어 추천을 중단합니다."));
+                    "error", "입력에 욕설 및 공격적인 표현이 들어가 있어 추천을 중단합니다."));
             }
 
             String prompt = PromptBuilder.buildPrompt(userInput, request.getExamplePlaces());
-
-            String llmResponse = GServ.call(prompt); // LLM 응답
-            llmResponse = JsonCleanUtils.removeJsonComments(llmResponse); // 🧼 주석 제거
-
-            System.out.println("🟢 최종 클린 JSON:\n" + llmResponse);
+            String llmRaw = GServ.call(prompt);
+            String llmCleaned = JsonCleanUtils.removeJsonComments(llmRaw);
 
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(llmResponse);
+            JsonNode root = mapper.readTree(llmCleaned);
 
             if (root.has("error")) {
                 return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
@@ -64,8 +61,9 @@ public class RecommendController {
                 return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
             }
 
-            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
-            });
+            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {});
+            System.out.println("추천 결과 수: " + results.size());
+            results.stream().limit(3).forEach(r -> System.out.println("👉 " + r.get("name")));
 
             return ResponseEntity.ok(Map.of("results", results));
 
@@ -77,20 +75,18 @@ public class RecommendController {
 
     @PostMapping("/getList")
     public ResponseEntity<?> getPlaceList(@RequestBody getPlaceListDTO request) {
+    	long start = System.currentTimeMillis();
         try {
             if (AbuseFilterUtils.isAbusiveOnly(request.getStartingLocation())) {
                 return ResponseEntity.ok(Map.of("error", "요청이 불명확하다."));
             }
 
             String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), request.getDate());
-
-            String llmResponse2 = GServ.call(prompt);
-            llmResponse2 = JsonCleanUtils.removeJsonComments(llmResponse2); // 🧼 주석 제거
-
-            System.out.println("🟢 최종 클린 JSON:\n" + llmResponse2);
+            String llmRaw = GServ.call(prompt);
+            String llmCleaned = JsonCleanUtils.removeJsonComments(llmRaw);
 
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(llmResponse2);
+            JsonNode root = mapper.readTree(llmCleaned);
 
             if (root.has("error")) {
                 return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
@@ -101,21 +97,24 @@ public class RecommendController {
                 return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
             }
 
-            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {
-            });
+            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {});
 
             for (Map<String, String> place : results) {
                 String lat = place.get("latitude");
                 String lng = place.get("longitude");
 
                 String currentImage = place.get("imageUrl");
-                if (currentImage == null || currentImage.equals("null")) {
+                if (currentImage == null || "null".equals(currentImage)) {
                     String imageUrl = googlePlaceService.getImageUrl(lat, lng);
                     place.put("imageUrl", imageUrl != null ? imageUrl : null);
                 }
             }
-
-            System.out.println("컨트롤러에서 확인 : " + results);
+            long end = System.currentTimeMillis(); // 끝 시간 기록
+            long duration = end - start;
+            System.out.println("⏱️ 전체 응답 소요 시간: " + duration + "ms");
+            
+            System.out.println("추천 결과 수: " + results.size());
+            results.stream().limit(3).forEach(r -> System.out.println("👉 " + r.get("name")));
 
             return ResponseEntity.ok(Map.of("results", results));
 
