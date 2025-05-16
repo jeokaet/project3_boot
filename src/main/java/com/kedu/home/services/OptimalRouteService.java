@@ -1,5 +1,7 @@
 package com.kedu.home.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kedu.home.dto.PlaceDTO;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OptimalRouteService {
@@ -24,12 +27,52 @@ public class OptimalRouteService {
     }
 
     // 최적 동선 계산
-    public List<PlaceDTO> getOptimizedRoute(List<PlaceDTO> places) {
-        if (places == null || places.size() < 3) return places;
+    public List<PlaceDTO> getOptimizedRoute(Map<String, Object>  data) {
+    	if (data == null || data.size() < 3) return Collections.emptyList();
 
-        PlaceDTO origin = places.get(0);
-        PlaceDTO destination = places.get(places.size() - 1);
-        List<PlaceDTO> waypoints = places.subList(1, places.size() - 1);
+        
+        ObjectMapper mapper = new ObjectMapper();
+    	
+    	List<PlaceDTO> places = mapper.convertValue(data.get("places"), new TypeReference<List<PlaceDTO>>() {});
+        double longitude = Double.parseDouble(data.get("longitude").toString());
+        double latitude = Double.parseDouble(data.get("latitude").toString());
+        
+        // 여기서 시작점이랑 끝점 설정.
+
+        // 출발지 생성 및 배열에 추가
+        PlaceDTO origin = new PlaceDTO();
+        origin.setName("출발지");
+        origin.setType("출발");
+        origin.setReason("사용자가 선택한 출발지");
+        origin.setDescription("출발지입니다.");
+        origin.setReason("사용자 선택");
+        origin.setLatitude(latitude);
+        origin.setLongitude(longitude);
+        origin.setImageUrl(null);
+        
+        places.add(0, origin);
+        
+        // 도착지 설정
+        
+        PlaceDTO destination = null;
+        double maxDistance = -1;
+        for (PlaceDTO place : places) {
+            double dist = haversine(latitude, longitude, place.getLatitude(), place.getLongitude());
+            if (dist > maxDistance) {
+                maxDistance = dist;
+                destination = place;
+            }
+        } 
+
+
+        // 경유지 설정
+        List<PlaceDTO> waypoints = new ArrayList<>();
+        for (PlaceDTO place : places) {
+            if (!place.equals(destination)) {
+                waypoints.add(place);
+            }
+        }
+        
 
         List<List<PlaceDTO>> permutations = new ArrayList<>();
         permute(waypoints, 0, permutations);

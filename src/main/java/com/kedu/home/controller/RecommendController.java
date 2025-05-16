@@ -51,21 +51,16 @@ public class RecommendController {
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(llmCleaned);
-
-            if (root.has("error")) {
-                return ResponseEntity.ok(Map.of("error", root.get("error").asText()));
-            }
-
             JsonNode resultsNode = root.get("results");
             if (resultsNode == null || !resultsNode.isArray()) {
                 return ResponseEntity.ok(Map.of("error", "추천 장소가 없습니다."));
             }
 
-            List<Map<String, String>> results = mapper.convertValue(resultsNode, new TypeReference<>() {});
-            System.out.println("추천 결과 수: " + results.size());
-            results.stream().limit(3).forEach(r -> System.out.println("👉 " + r.get("name")));
+            List<Map<String, String>> results1 = mapper.convertValue(resultsNode, new TypeReference<>() {});
+            System.out.println("추천 결과 수: " + results1.size());
+            results1.stream().limit(3).forEach(r -> System.out.println("👉 " + r.get("name")));
 
-            return ResponseEntity.ok(Map.of("results", results));
+            return ResponseEntity.ok(Map.of("results", results1));
 
         } catch (Exception e) {
             e.printStackTrace();
