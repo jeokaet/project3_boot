@@ -79,7 +79,7 @@ public class RecommendController {
 
             String dateStr = request.getDate();
             if (dateStr == null || dateStr.trim().isEmpty()) {
-                dateStr = LocalDate.now().toString(); // yyyy-MM-dd 형식
+                dateStr = LocalDate.now().toString(); // yyyy-MM-dd 형식s
             }
             String prompt = PromptBuilder.buildPrompt2(request.getStartingLocation(), dateStr);
             String llmRaw = GServ.call(prompt);
