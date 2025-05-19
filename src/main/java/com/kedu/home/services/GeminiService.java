@@ -51,11 +51,9 @@ public class GeminiService {
             }
 
             String body = response.body().string();
-            System.out.println("🔵 Gemini 응답 원문:\n" + body);
 
             JsonNode json = mapper.readTree(body);
             String content = json.at("/candidates/0/content/parts/0/text").asText();
-            System.out.println("🟢 추출된 LLM 텍스트:\n" + content);
 
             // ✅ 마크다운 블록 제거
             String cleaned = content.replaceAll("(?s)```json\\s*|```", "").trim();
