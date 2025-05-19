@@ -6,48 +6,54 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class KakaoRouteService {
-	
-	 @Value("${kakao.rest.api.key}")  // application.properties 에서 읽음
-	    private String kakaoRestApiKey;
 
-	    private final RestTemplate restTemplate;
+    @Value("${kakao.rest.api.key}")
+    private String kakaoRestApiKey;
 
-	    public KakaoRouteService(RestTemplate restTemplate) {
-	        this.restTemplate = restTemplate;
-	    }
-	    
-	    public String getRoute(String origin, String destination, String waypoints, String priority, boolean alternatives, boolean summary) {
-	        String url = "https://apis-navi.kakaomobility.com/v1/directions";
+    private final RestTemplate restTemplate;
 
-	        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-	                .queryParam("origin", origin)
-	                .queryParam("destination", destination)
-	                .queryParam("priority", priority)
-	                .queryParam("alternatives", alternatives)
-	                .queryParam("summary", summary);
+    public KakaoRouteService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-	        if (waypoints != null && !waypoints.isEmpty()) {
-	            builder.queryParam("waypoints", waypoints);
-	        }
+    public String getRoute(String origin, String destination, String waypoints, String priority, boolean alternatives, boolean summary) {
+        String baseUrl = "https://apis-navi.kakaomobility.com/v1/directions";
 
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.set("Authorization", "KakaoAK " + kakaoRestApiKey);
+        StringBuilder urlBuilder = new StringBuilder(baseUrl)
+            .append("?origin=").append(origin)
+            .append("&destination=").append(destination)
+            .append("&priority=").append(priority)
+            .append("&alternatives=").append(alternatives)
+            .append("&summary=").append(summary);
 
-	        HttpEntity<String> entity = new HttpEntity<>(headers);
+        if (waypoints != null && !waypoints.isEmpty()) {
+            // waypoints 내 파이프 문자는 인코딩하지 않고 그대로 전달
+            urlBuilder.append("&waypoints=").append(waypoints);
+        }
 
-	        ResponseEntity<String> response = restTemplate.exchange(
-	                builder.toUriString(),
-	                HttpMethod.GET,
-	                entity,
-	                String.class
-	        );
+        String url = urlBuilder.toString();
 
-	        return response.getBody();
-	    }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "KakaoAK " + kakaoRestApiKey);
 
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            System.err.println("Kakao API error: " + e.getResponseBodyAsString());
+            throw e;
+        }
+    }
 }

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,13 +68,39 @@ public class NaverRouteController {
 	        @RequestParam String origin,                 
 	        @RequestParam String destination,            
 	        @RequestParam(required = false) String waypoints,  
-	        @RequestParam(defaultValue = "RECOMMEND") String priority,
+	        @RequestParam(defaultValue = "DISTANCE") String priority,
 	        @RequestParam(defaultValue = "false") boolean alternatives,
 	        @RequestParam(defaultValue = "false") boolean summary
 	) {
+		 System.out.println("origin: " + origin);
+		    System.out.println("destination: " + destination);
+		    System.out.println("waypoints: " + waypoints);
 	    String response = kServ.getRoute(origin, destination, waypoints, priority, alternatives, summary);
+	    System.out.println(response+"여기를봐");
 	    return ResponseEntity.ok(response);
 	}
+	
+	@PostMapping("/tmapTransit")
+	public ResponseEntity<String> getTmapTransit(@RequestBody Map<String, Object> body) {
+	    String url = "https://apis.openapi.sk.com/transit/routes";
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("appKey", "689xFOTlNE41LDlCVggpl84io2Ii0kOu2pTVJFt7");
+
+	    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+	    RestTemplate restTemplate = new RestTemplate();
+	    ResponseEntity<String> response = restTemplate.exchange(
+	        url,
+	        HttpMethod.POST,
+	        entity,
+	        String.class
+	    );
+
+	    return response;
+	}
+
 	
 	
 }
