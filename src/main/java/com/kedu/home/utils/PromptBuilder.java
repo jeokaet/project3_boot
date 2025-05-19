@@ -77,11 +77,21 @@ public class PromptBuilder {
         sb.append("📌 사용자가 원하는 type 값은 아래와 같습니다:\n");
         sb.append("- restaurant, cafe, bar, bakery, tourist_attraction, museum, zoo, amusement_park, aquarium, shopping_mall, clothing_store, park, natural_feature\n");
         sb.append("1. 장소의 type 값이 이 목록에 포함되지 않으면, 해당 장소는 삭제 대상입니다.\n");
+        sb.append(" - 단, 장소리스트에 장소의 개수가 20개 이하가 되는 순간부터 삭제를 중지하세요.\n");
+        sb.append("2. 장소의 type 값이 tourist_attraction 인 경우에 대해, 그 장소가 시,도,구,동 범위의 지역명에 해당하는 경우 삭제 대상입니다.\n");
 
         sb.append("당신의 두번째 역할은 리스트에서 삭제조건에 해당하는 장소를 삭제한 뒤, 리스트에 들어있는 장소의 정보 중 null 값을 가진 description과 reason의 내용을 생성하고 넣어주는 것입니다.\n");       
         sb.append("📌 수정 조건 \n");
         sb.append("1. 제공하고 있는 장소의 정보를 참고하여 description과 reason 내용을 작성.\n");
         sb.append("2. description과 reason은 서로 다른 내용을 담도록 하세요.\n");
+        sb.append("3. description과 reason은 한글로만 작성하세요. 다른 언어는 사용하지 마세요.\n");
+        
+        sb.append("당신의 세번째 역할은 리스트에서 첫번째와 두번째 역할을 수행한 뒤, 리스트에 들어있는 장소의 정보 중 name 값이 한글이 아닌 경우에 대해서만 해당 값을 한글로 수정하는 것입니다.\n");       
+        sb.append("📌 수정 조건 \n");
+        sb.append("1. 한글 발음을 영어로 표기한 경우에 대해서만 수정합니다.\n");
+        sb.append(" - 단, name 값이 한국에서 지점이 50곳이 넘는 프렌차이즈이며, 해당값이 영어인 경우에 대해서도 한글로 수정합니다.\n");
+        sb.append("2. 영어로 표기된 기존 name 값만 참고하여 한글로 수정하세요.\n");
+        sb.append("3. name 값에 한글이 포함되어 있는 경우 절대 수정하지 마세요.\n");
         
         sb.append("📌 참고할 날짜: ").append(dateStr).append("\n\n");
         
@@ -101,7 +111,7 @@ public class PromptBuilder {
         sb.append("\"name\": \"장소명\",\n");
         sb.append("\"type\": \"장소 유형\",\n");
         sb.append("\"region\": \"지역명\",\n");
-        sb.append("\"description\": \"장소 설명 (1문장)\",\n");
+        sb.append("      \"description\": \"장소 설명 (1문장)\",\n");
         sb.append("\"reason\": \"추천 이유\",\n");
         sb.append("\"latitude\": \"위도\",\n");
         sb.append("\"longitude\": \"경도\",\n");
@@ -117,7 +127,8 @@ public class PromptBuilder {
         sb.append("1. JSON 외 텍스트, 설명, 마크다운, 코드블럭 등은 절대 포함하지 마세요.\n");
         sb.append("2. 특히 아래 단어들은 description 또는 reason에 절대 포함하지 마세요:\n");
         sb.append("   - 기본, 대체, 잘못된 입력, 임의, 예시, 추천이 부족하여\n");
-//        sb.append("3. 마지막으로 리스트에 최대 5개의 장소만 남기고 다 삭제하세요.\n");
+        sb.append("3. 리스트에 최소 20개의 장소 목록이 남아있어야 합니다. \n");
+
 
         sb.append("장소 리스트:\n");
         for (int i = 0; i < results.size(); i++) {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kedu.home.dto.GetRegionDTO;
+import com.kedu.home.dto.InsertRegionDTO;
 import com.kedu.home.dto.RegionDTO;
 
 @Repository
@@ -15,7 +16,7 @@ public class RegionDAO {
 	@Autowired
     private SqlSession mybatis;
 	
-	public void insertRegion(RegionDTO dto) {
+	public void insertRegion(InsertRegionDTO dto) {
 		mybatis.insert("RegionMapper.insertRegion", dto);
 	}
 	

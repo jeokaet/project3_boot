@@ -2,17 +2,16 @@ package com.kedu.home.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -144,6 +143,7 @@ public class GooglePlaceApiService {
 
             Map<String, Object> body = restTemplate.getForObject(url, Map.class);
             if (body == null || !"OK".equals(body.get("status"))) break;
+            
 
             List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
             for (Map<String, Object> place : places) {
@@ -163,7 +163,8 @@ public class GooglePlaceApiService {
                 dto.setType(extractType((List<String>) detail.get("types")));
                 dto.setDescription("null");
                 dto.setReason("null");
-                dto.setImageUrl(extractImageUrl((List<Map<String, Object>>) detail.get("photos")));
+                dto.setImageUrl(null);
+                //dto.setImageUrl(extractImageUrl((List<Map<String, Object>>) detail.get("photos")));
 
                 results.add(dto);
             }
@@ -177,7 +178,9 @@ public class GooglePlaceApiService {
         
         long start = System.currentTimeMillis();
         
-        System.out.println(results);
+        System.out.println("장소리스트" + results);
+        System.out.println("장소 개수: " + results.size());
+        
         
 
         try {
@@ -189,26 +192,42 @@ public class GooglePlaceApiService {
             String llmRaw = geminiServ.call(prompt);
             String llmCleaned = JsonCleanUtils.removeJsonComments(llmRaw);
             
-            String cleaned = llmRaw
-                    .replaceAll("(?s)```json\\s*|```", "")  // ```json 제거
-                    .replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "") // 기타 제어문자 제거
-                    .replaceAll("[\\r\\n\\t]", " ") // 줄바꿈 계열은 공백으로 변환
-                    .trim();
+            
 
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(llmCleaned);
-            JsonNode resultsNode = root.get("results");
+            List<Map<String, String>> filteredResults = new ArrayList<>();
             
+            try {
+                JsonNode root = mapper.readTree(llmCleaned); // 여기서 깨짐
+                JsonNode resultsNode = root.get("results");
+                
+                if (resultsNode != null && resultsNode.isArray()) {
+                    filteredResults = mapper.convertValue(resultsNode, new TypeReference<>() {});
+                } else {
+                    System.err.println("⚠️ 'results' 노드가 없거나 배열이 아님: " + root.toPrettyString());
+                }
 
-            List<Map<String, String>> filteredResults = mapper.convertValue(resultsNode, new TypeReference<>() {});
+                // return mapper.convertValue(resultsNode, new TypeReference<>() {});
+            } catch (JsonProcessingException ex) {
+            	System.err.println("❌ JSON 파싱 실패! 응답 = \n" + llmCleaned);
+                ex.printStackTrace();
+            }
+            for (Map<String, String> place : filteredResults) {
+                String lat = place.get("latitude");
+                String lng = place.get("longitude");
 
+                String currentImage = place.get("imageUrl");
+                if (currentImage == null || "null".equals(currentImage)) {
+                    String imageUrl = getImageUrl(lat, lng);
+                    place.put("imageUrl", imageUrl != null ? imageUrl : null);
+                }
+            }
             
-            long end = System.currentTimeMillis(); // 끝 시간 기록d
-            long duration = end - start;
-            System.out.println("⏱️ 전체 응답 소요 시간: " + duration + "ms");
             
+//            long end = System.currentTimeMillis(); // 끝 시간 기록
+//            long duration = end - start;
+//            System.out.println("⏱️ 전체 응답 소요 시간: " + duration + "ms");
             
-
             return filteredResults;
         }catch (Exception e) {
             e.printStackTrace();
