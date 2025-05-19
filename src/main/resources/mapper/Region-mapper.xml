@@ -3,13 +3,15 @@
 
 <mapper namespace="RegionMapper">
 
-	<insert id="insertRegion" parameterType="com.kedu.home.dto.RegionDTO">
-	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, #{fileId} )
+	<insert id="insertRegion" parameterType="com.kedu.home.dto.InsertRegionDTO">
+	 	INSERT INTO region VALUES ( regionSeq.nextval, #{regionName}, #{regionDetail}, #{fileId}, #{latitude}, #{longitude} )
 	</insert>
 	
 	<select id="selectRegionList" resultType="com.kedu.home.dto.GetRegionDTO">
 		SELECT r.regionName,
 			   r.regionDetail,
+			   r.latitude,
+			   r.longitude,
 			   i.filePath
 		  FROM region r
 		  JOIN regionImg i ON r.fileId = i.imageId
@@ -24,7 +26,12 @@
 	</delete>
 	
 	<update id="updateRegion" parameterType="com.kedu.home.dto.RegionDTO">
-		UPDATE region SET regionName=#{regionName}, regionDetail = #{regionDetail}, fileId = null WHERE regionId=${regionId}
+		UPDATE region r
+		  JOIN regionImg i ON r.fileId = i.ImageId
+		   SET r.regionName=#{regionName}, 
+		       r.regionDetail = #{regionDetail}, 
+		       i.filePath = #{filePath}
+		 WHERE regionId=${regionId}
 	</update>
 	
 	<select id="searchByRegionName" resultType="com.kedu.home.dto.GetRegionDTO" parameterType="String">
@@ -32,6 +39,8 @@
 	    r.regionId,
 	    r.regionName,
 	    r.regionDetail,
+	    r.latitude,
+		r.longitude,
 	    i.filePath
 	  FROM region r
 	  JOIN regionImg i ON r.fileId = i.imageId
