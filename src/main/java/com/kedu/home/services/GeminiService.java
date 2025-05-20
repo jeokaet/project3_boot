@@ -57,15 +57,13 @@ public class GeminiService {
 
             String body = response.body().string();
 
-            JsonNode json = mapper.readTree(body);  // 여기서 에러나는 중
+            JsonNode json = mapper.readTree(body);
             String content = json.at("/candidates/0/content/parts/0/text").asText();
             System.out.println("🟢 추출된 LLM 텍스트:\n" + content);
             
             if (content == null) {
                 throw new IllegalArgumentException("Gemini 응답이 null입니다.");
             }
-
-            // ✅ 마크다운 블록 제거
             String cleaned = content.replaceAll("(?s)```json\\s*|```", "").trim();
             
             cleaned = cleaned.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""); // 콘트롤 문자 중 \r\n\t 제외하고 제거
