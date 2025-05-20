@@ -68,7 +68,7 @@ public class GooglePlaceApiService {
     	Map<String, String> photoMap = new HashMap<>();
 
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-        List<String> keywords = List.of( "관광지", "카페", "맛집", "쇼핑몰" );
+        List<String> keywords = List.of( "관광지", "음식점", "카페", "쇼핑" );
        
 
         for (String keyword : keywords) {
@@ -89,8 +89,9 @@ public class GooglePlaceApiService {
 	
 	            List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
 	            
+	            
 	            for (Map<String, Object> place : places) {
-	                String placeId = (String) place.get("place_id");
+	            	String placeId = (String) place.get("place_id"); 
 	                List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
 	                if (seenPlaceIds.contains(placeId)) continue;
 	                seenPlaceIds.add(placeId);
@@ -98,9 +99,11 @@ public class GooglePlaceApiService {
 	                Map<String, Object> location = (Map<String, Object>) geometry.get("location");
 	                
 	                String imageUrl = extractImageUrl(photos);
+	                System.out.println("장소아이디 : " + placeId);
 	                photoMap.put(placeId, imageUrl);
 	                
 	                PlaceDTO dto = new PlaceDTO();
+	                dto.setPlaceId(placeId);
 	                dto.setName((String) place.get("name"));
 	                dto.setRegion((String) place.get("vicinity"));
 	                dto.setLatitude(((Number) location.get("lat")).doubleValue());
@@ -161,16 +164,13 @@ public class GooglePlaceApiService {
             }
             
             for (Map<String, String> place : filteredResults) {
-                String latStr = place.get("latitude");
-                String lngStr = place.get("longitude");
 
                 for (PlaceDTO dto : results) {
-                    String placeId = dto.getPlaceId(); // 이 값이 있어야 함!
+                    String placeId = place.get("placeId");; // 이 값이 있어야 함!
                     String imageUrl = photoMap.get(placeId);
 
-                    
+                    System.out.println("플레이스 아이디2 : " + photoMap.get(placeId));
                         
-//                        place.put("imageUrl", photoMap.get(placeId));
                         if (imageUrl == null) {
                             System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
                             System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
@@ -178,6 +178,7 @@ public class GooglePlaceApiService {
                             System.out.println("✅ 이미지 URL 매칭 성공: " + imageUrl);
                         }
 
+                        System.out.println(imageUrl);
                         place.put("imageUrl", imageUrl);
                         
                         break;

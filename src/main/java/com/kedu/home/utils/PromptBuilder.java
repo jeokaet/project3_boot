@@ -31,6 +31,7 @@ public class PromptBuilder {
         sb.append("{\n");
         sb.append("  \"results\": [\n");
         sb.append("    {\n");
+        sb.append("      \"placeId\": \"장소아이디\",\n");
         sb.append("      \"name\": \"장소명\",\n");
         sb.append("      \"type\": \"장소 유형\",\n");
         sb.append("      \"region\": \"지역명\",\n");
@@ -62,7 +63,7 @@ public class PromptBuilder {
         for (int i = 0; i < places.size(); i++) {
             PlaceDTO p = places.get(i);
             sb.append(String.format("%d. %s (%s, %s) - %s / %s\n",
-                    i + 1, p.getName(), p.getType(), p.getRegion(), p.getDescription(), p.getReason(), p.getImageUrl()));
+                    i + 1, p.getPlaceId(), p.getName(), p.getType(), p.getRegion(), p.getDescription(), p.getReason(), p.getImageUrl()));
         }
 
         return sb.toString();
@@ -75,7 +76,7 @@ public class PromptBuilder {
         sb.append("당신의 첫번째 역할은 제공받은 장소리스트에서 삭제조건 해당하는 장소를 리스트에서 제거하는 것입니다.\n");
         sb.append("📌 삭제 조건 \n");
         sb.append("📌 사용자가 원하는 type 값은 아래와 같습니다:\n");
-        sb.append("- restaurant, cafe, bar, bakery, tourist_attraction, museum, zoo, amusement_park, aquarium, shopping_mall, clothing_store, park, natural_feature\n");
+        sb.append("- restaurant, cafe, bakery, tourist_attraction, museum, zoo, amusement_park, aquarium, shopping_mall, park, natural_feature\n");
         sb.append("1. 장소의 type 값이 이 목록에 포함되지 않으면, 해당 장소는 삭제 대상입니다.\n");
         sb.append(" - 단, 장소리스트에 장소의 개수가 20개 이하가 되는 순간부터 삭제를 중지하세요.\n");
         sb.append("2. 장소의 type 값이 tourist_attraction 인 경우에 대해, 그 장소가 시,도,구,동 범위의 지역명에 해당하는 경우 삭제 대상입니다.\n");
@@ -108,6 +109,7 @@ public class PromptBuilder {
         sb.append("{\n");
         sb.append("\"results\": [\n");
         sb.append("{\n");
+        sb.append("      \"placeId\": \"장소아이디\",\n");
         sb.append("\"name\": \"장소명\",\n");
         sb.append("\"type\": \"장소 유형\",\n");
         sb.append("\"region\": \"지역명\",\n");
@@ -135,6 +137,7 @@ public class PromptBuilder {
             PlaceDTO p = results.get(i);
             sb.append(String.format("%d. %s (%s, %s) - %s / %s / %s / %s / %s\n",
             	    i + 1,
+            	    p.getPlaceId(),
             	    p.getName(),
             	    p.getType(),
             	    p.getRegion(),
