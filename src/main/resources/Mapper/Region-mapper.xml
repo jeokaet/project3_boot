@@ -15,6 +15,7 @@
 			   i.filePath
 		  FROM region r
 		  JOIN regionImg i ON r.fileId = i.imageId
+      ORDER BY r.regionId
 	</select>
 	
 	<delete id="deleteRegions" parameterType="List">

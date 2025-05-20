@@ -33,16 +33,6 @@ public class GooglePlaceApiService {
     private String API_KEY;
    
     private final RestTemplate restTemplate = new RestTemplate();
-    private Map<String, Object> getPlaceDetails(String placeId) {
-        String url = UriComponentsBuilder.fromHttpUrl("https://maps.googleapis.com/maps/api/place/details/json")
-                .queryParam("place_id", placeId)
-                .queryParam("fields", "name,formatted_address,geometry,types,photos")
-                .queryParam("key", API_KEY)
-                .build().toUriString();
-
-        Map<String, Object> detailResp = restTemplate.getForObject(url, Map.class);
-        return (Map<String, Object>) detailResp.get("result");
-    }
 
     private String extractImageUrl(List<Map<String, Object>> photos) {
         if (photos == null || photos.isEmpty()) return "null";
@@ -76,6 +66,7 @@ public class GooglePlaceApiService {
             int pageCount = 0;
             
             do {
+
            
                String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
                    .queryParam("location", request.getLatitude() + "," + request.getLongitude())
@@ -113,6 +104,7 @@ public class GooglePlaceApiService {
                    dto.setReason("null");
                    dto.setImageUrl(null);
 
+
                    results.add(dto);
                }
                
@@ -126,13 +118,6 @@ public class GooglePlaceApiService {
         
         long start = System.currentTimeMillis();
         
-        
-        
-        System.out.println("장소리스트" + results);
-        System.out.println("장소 개수: " + results.size());
-        
-        
-
         try {
             String dateStr = request.getDate();
             if (dateStr == null || dateStr.trim().isEmpty()) {
@@ -157,36 +142,20 @@ public class GooglePlaceApiService {
                     System.err.println("⚠️ 'results' 노드가 없거나 배열이 아님: " + root.toPrettyString());
                 }
 
-                // return mapper.convertValue(resultsNode, new TypeReference<>() {});
             } catch (JsonProcessingException ex) {
-               System.err.println("❌ JSON 파싱 실패! 응답 = \n" + llmCleaned);
                 ex.printStackTrace();
             }
             
             for (Map<String, String> place : filteredResults) {
 
                 for (PlaceDTO dto : results) {
-                    String placeId = place.get("placeId");; // 이 값이 있어야 함!
+                    String placeId = place.get("placeId");
                     String imageUrl = photoMap.get(placeId);
-
-                    System.out.println("플레이스 아이디2 : " + photoMap.get(placeId));
-                        
-                        if (imageUrl == null) {
-                            System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
-                            System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
-                        } else {
-                            System.out.println("✅ 이미지 URL 매칭 성공: " + imageUrl);
-                        }
-
-                        System.out.println(imageUrl);
-                        place.put("imageUrl", imageUrl);
-                        
-                        break;
+                    place.put("imageUrl", imageUrl);
+                    break;
                     }
                 }
             
-
-            System.out.println("필터링 후 개수 : " + filteredResults.size());
             long duration = System.currentTimeMillis() - start;
             System.out.println("⏱ 응답 시간: " + duration + "ms");
             
