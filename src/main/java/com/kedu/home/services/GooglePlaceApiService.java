@@ -68,7 +68,7 @@ public class GooglePlaceApiService {
     	Map<String, String> photoMap = new HashMap<>();
 
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-        List<String> keywords = List.of( "카페", "전망 좋은 곳", "관광지", "쇼핑몰", "맛집" );
+        List<String> keywords = List.of( "관광지", "카페", "맛집", "쇼핑몰" );
        
 
         for (String keyword : keywords) {
@@ -165,16 +165,27 @@ public class GooglePlaceApiService {
                 String lngStr = place.get("longitude");
 
                 for (PlaceDTO dto : results) {
-                    String dtoLatStr = String.format("%.7f", dto.getLatitude());
-                    String dtoLngStr = String.format("%.7f", dto.getLongitude());
+                    String placeId = dto.getPlaceId(); // 이 값이 있어야 함!
+                    String imageUrl = photoMap.get(placeId);
 
-                    if (latStr.equals(dtoLatStr) && lngStr.equals(dtoLngStr)) {
-                        place.put("imageUrl", dto.getImageUrl());
+                    
+                        
+//                        place.put("imageUrl", photoMap.get(placeId));
+                        if (imageUrl == null) {
+                            System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
+                            System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
+                        } else {
+                            System.out.println("✅ 이미지 URL 매칭 성공: " + imageUrl);
+                        }
+
+                        place.put("imageUrl", imageUrl);
+                        
                         break;
                     }
                 }
-            }
+            
 
+            System.out.println("필터링 후 개수 : " + filteredResults.size());
             long duration = System.currentTimeMillis() - start;
             System.out.println("⏱ 응답 시간: " + duration + "ms");
             
