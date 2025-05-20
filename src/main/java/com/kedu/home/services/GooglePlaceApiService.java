@@ -25,13 +25,13 @@ import com.kedu.home.utils.PromptBuilder;
 
 @Service
 public class GooglePlaceApiService {
-	
-	@Autowired
-	private GeminiService geminiServ;
-	
-	@Value("${google.api-key}")
+   
+   @Autowired
+   private GeminiService geminiServ;
+   
+   @Value("${google.api-key}")
     private String API_KEY;
-	
+   
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String extractImageUrl(List<Map<String, Object>> photos) {
@@ -53,9 +53,9 @@ public class GooglePlaceApiService {
     
     
     public List<Map<String, String>> getPlaceList(getPlaceListDTO request) throws InterruptedException {
-    	List<PlaceDTO> results = new ArrayList<>();
-    	Set<String> seenPlaceIds = new HashSet<>();
-    	Map<String, String> photoMap = new HashMap<>();
+       List<PlaceDTO> results = new ArrayList<>();
+       Set<String> seenPlaceIds = new HashSet<>();
+       Map<String, String> photoMap = new HashMap<>();
 
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
         List<String> keywords = List.of( "관광지", "음식점", "카페", "쇼핑" );
@@ -66,57 +66,60 @@ public class GooglePlaceApiService {
             int pageCount = 0;
             
             do {
-        	    String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
-        	        .queryParam("location", request.getLatitude() + "," + request.getLongitude())
-        	        .queryParam("radius", 10000)
-        	        .queryParam("keyword", keyword)
-        	        .queryParam("key", API_KEY)
-        	        .build().toUriString();
-        	    
-        	    Map<String, Object> body = restTemplate.getForObject(url, Map.class);
-	            if (body == null || !"OK".equals(body.get("status"))) break;
-	
-	            List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
-	            
-	            
-	            for (Map<String, Object> place : places) {
-	            	String placeId = (String) place.get("place_id"); 
-	                List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
-	                if (seenPlaceIds.contains(placeId)) continue;
-	                seenPlaceIds.add(placeId);
-	                Map<String, Object> geometry = (Map<String, Object>) place.get("geometry");
-	                Map<String, Object> location = (Map<String, Object>) geometry.get("location");
-	                
-	                String imageUrl = extractImageUrl(photos);
-	                System.out.println("장소아이디 : " + placeId);
-	                photoMap.put(placeId, imageUrl);
-	                
-	                PlaceDTO dto = new PlaceDTO();
-	                dto.setPlaceId(placeId);
-	                dto.setName((String) place.get("name"));
-	                dto.setRegion((String) place.get("vicinity"));
-	                dto.setLatitude(((Number) location.get("lat")).doubleValue());
-	                dto.setLongitude(((Number) location.get("lng")).doubleValue());
-	                dto.setType(extractType((List<String>) place.get("types")));
-	                dto.setDescription("null");
-	                dto.setReason("null");
-	                dto.setImageUrl(null);
 
-	                results.add(dto);
-	            }
-	            
-	            nextPageToken = (String) body.get("next_page_token");
-	            pageCount++;
-	
-	            if (nextPageToken != null) Thread.sleep(2000);
-	            
+           
+               String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                   .queryParam("location", request.getLatitude() + "," + request.getLongitude())
+                   .queryParam("radius", 10000)
+                   .queryParam("keyword", keyword)
+                   .queryParam("key", API_KEY)
+                   .build().toUriString();
+               
+               Map<String, Object> body = restTemplate.getForObject(url, Map.class);
+               if (body == null || !"OK".equals(body.get("status"))) break;
+   
+               List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
+               
+               
+               for (Map<String, Object> place : places) {
+                  String placeId = (String) place.get("place_id"); 
+                   List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
+                   if (seenPlaceIds.contains(placeId)) continue;
+                   seenPlaceIds.add(placeId);
+                   Map<String, Object> geometry = (Map<String, Object>) place.get("geometry");
+                   Map<String, Object> location = (Map<String, Object>) geometry.get("location");
+                   
+                   String imageUrl = extractImageUrl(photos);
+                   System.out.println("장소아이디 : " + placeId);
+                   photoMap.put(placeId, imageUrl);
+                   
+                   PlaceDTO dto = new PlaceDTO();
+                   dto.setPlaceId(placeId);
+                   dto.setName((String) place.get("name"));
+                   dto.setRegion((String) place.get("vicinity"));
+                   dto.setLatitude(((Number) location.get("lat")).doubleValue());
+                   dto.setLongitude(((Number) location.get("lng")).doubleValue());
+                   dto.setType(extractType((List<String>) place.get("types")));
+                   dto.setDescription("null");
+                   dto.setReason("null");
+                   dto.setImageUrl(null);
+
+
+                   results.add(dto);
+               }
+               
+               nextPageToken = (String) body.get("next_page_token");
+               pageCount++;
+   
+               if (nextPageToken != null) Thread.sleep(2000);
+               
             } while (nextPageToken != null && pageCount < 3);
         }
         
         long start = System.currentTimeMillis();
         
         try {
-        	 String dateStr = request.getDate();
+            String dateStr = request.getDate();
             if (dateStr == null || dateStr.trim().isEmpty()) {
                 dateStr = LocalDate.now().toString(); // yyyy-MM-dd 형식
             }

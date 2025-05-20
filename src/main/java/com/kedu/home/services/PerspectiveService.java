@@ -36,7 +36,7 @@ public class PerspectiveService {
             Map<?, ?> scores = (Map<?, ?>) ((Map<?, ?>) response.getBody().get("attributeScores")).get("TOXICITY");
             double score = (double) ((Map<?, ?>) scores.get("summaryScore")).get("value");
 
-            return score >= 0.75; // 기준점: 0.75
+            return score >= 0.93;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
