@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.kedu.home.dao.RegionDAO;
 import com.kedu.home.dto.AddRegionDTO;
 import com.kedu.home.dto.GetRegionDTO;
+import com.kedu.home.dto.InsertRegionDTO;
 import com.kedu.home.dto.RegionDTO;
 
 @Service
@@ -29,7 +30,7 @@ public class RegionService {
 		
 		int fileId = fileServ.upload(dto);
 		
-		RegionDTO region = new RegionDTO();
+		InsertRegionDTO region = new InsertRegionDTO();
 		region.setRegionName(dto.getRegionName());
 		region.setRegionDetail(dto.getRegionDetail());
 		region.setFileId(fileId);

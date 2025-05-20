@@ -50,7 +50,7 @@ public class OptimalRouteService {
         origin.setLongitude(longitude);
         origin.setImageUrl(null);
         
-       
+
         
         // 도착지 설정
         

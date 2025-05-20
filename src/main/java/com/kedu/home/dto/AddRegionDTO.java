@@ -7,16 +7,20 @@ public class AddRegionDTO {
 	private String regionName;
 	private String regionDetail;
 	private MultipartFile file;
+	private double latitude;
+	private double longitude;
 	
 	
 	public AddRegionDTO() {}
-	
 
-	public AddRegionDTO(String regionName, String regionDetail, MultipartFile file) {
+
+	public AddRegionDTO(String regionName, String regionDetail, MultipartFile file, double latitude, double longitude) {
 		super();
 		this.regionName = regionName;
 		this.regionDetail = regionDetail;
 		this.file = file;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 
@@ -47,7 +51,28 @@ public class AddRegionDTO {
 
 	public void setFile(MultipartFile file) {
 		this.file = file;
-	};
+	}
+
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	
 	
 	
 

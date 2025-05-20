@@ -19,6 +19,7 @@ public class getPlaceListDTO {
 		this.longitude = longitude;
 	}
 
+
 	public String getDate() {
 		return date;
 	}
@@ -50,8 +51,6 @@ public class getPlaceListDTO {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	};
-	
-	
-	
+
 
 }
