@@ -25,13 +25,13 @@ import com.kedu.home.utils.PromptBuilder;
 
 @Service
 public class GooglePlaceApiService {
-	
-	@Autowired
-	private GeminiService geminiServ;
-	
-	@Value("${google.api-key}")
+   
+   @Autowired
+   private GeminiService geminiServ;
+   
+   @Value("${google.api-key}")
     private String API_KEY;
-	
+   
     private final RestTemplate restTemplate = new RestTemplate();
     private Map<String, Object> getPlaceDetails(String placeId) {
         String url = UriComponentsBuilder.fromHttpUrl("https://maps.googleapis.com/maps/api/place/details/json")
@@ -63,12 +63,12 @@ public class GooglePlaceApiService {
     
     
     public List<Map<String, String>> getPlaceList(getPlaceListDTO request) throws InterruptedException {
-    	List<PlaceDTO> results = new ArrayList<>();
-    	Set<String> seenPlaceIds = new HashSet<>();
-    	Map<String, String> photoMap = new HashMap<>();
+       List<PlaceDTO> results = new ArrayList<>();
+       Set<String> seenPlaceIds = new HashSet<>();
+       Map<String, String> photoMap = new HashMap<>();
 
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-        List<String> keywords = List.of( "관광지", "카페", "맛집", "쇼핑몰" );
+        List<String> keywords = List.of( "가볼만한곳", "카페", "맛집", "쇼핑몰" );
        
 
         for (String keyword : keywords) {
@@ -76,48 +76,50 @@ public class GooglePlaceApiService {
             int pageCount = 0;
             
             do {
-        	
-        	    String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
-        	        .queryParam("location", request.getLatitude() + "," + request.getLongitude())
-        	        .queryParam("radius", 10000)
-        	        .queryParam("keyword", keyword)
-        	        .queryParam("key", API_KEY)
-        	        .build().toUriString();
-        	    
-        	    Map<String, Object> body = restTemplate.getForObject(url, Map.class);
-	            if (body == null || !"OK".equals(body.get("status"))) break;
-	
-	            List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
-	            
-	            for (Map<String, Object> place : places) {
-	                String placeId = (String) place.get("place_id");
-	                List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
-	                if (seenPlaceIds.contains(placeId)) continue;
-	                seenPlaceIds.add(placeId);
-	                Map<String, Object> geometry = (Map<String, Object>) place.get("geometry");
-	                Map<String, Object> location = (Map<String, Object>) geometry.get("location");
-	                
-	                String imageUrl = extractImageUrl(photos);
-	                photoMap.put(placeId, imageUrl);
-	                
-	                PlaceDTO dto = new PlaceDTO();
-	                dto.setName((String) place.get("name"));
-	                dto.setRegion((String) place.get("vicinity"));
-	                dto.setLatitude(((Number) location.get("lat")).doubleValue());
-	                dto.setLongitude(((Number) location.get("lng")).doubleValue());
-	                dto.setType(extractType((List<String>) place.get("types")));
-	                dto.setDescription("null");
-	                dto.setReason("null");
-	                dto.setImageUrl(null);
+           
+               String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                   .queryParam("location", request.getLatitude() + "," + request.getLongitude())
+                   .queryParam("radius", 10000)
+                   .queryParam("keyword", keyword)
+                   .queryParam("key", API_KEY)
+                   .build().toUriString();
+               
+               Map<String, Object> body = restTemplate.getForObject(url, Map.class);
+               if (body == null || !"OK".equals(body.get("status"))) break;
+   
+               List<Map<String, Object>> places = (List<Map<String, Object>>) body.get("results");
+               
+               
+               for (Map<String, Object> place : places) {
+                  String placeId = (String) place.get("place_id"); 
+                   List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
+                   if (seenPlaceIds.contains(placeId)) continue;
+                   seenPlaceIds.add(placeId);
+                   Map<String, Object> geometry = (Map<String, Object>) place.get("geometry");
+                   Map<String, Object> location = (Map<String, Object>) geometry.get("location");
+                   
+                   String imageUrl = extractImageUrl(photos);
+                   photoMap.put(placeId, imageUrl);
+                   
+                   PlaceDTO dto = new PlaceDTO();
+                   dto.setPlaceId(placeId);
+                   dto.setName((String) place.get("name"));
+                   dto.setRegion((String) place.get("vicinity"));
+                   dto.setLatitude(((Number) location.get("lat")).doubleValue());
+                   dto.setLongitude(((Number) location.get("lng")).doubleValue());
+                   dto.setType(extractType((List<String>) place.get("types")));
+                   dto.setDescription("null");
+                   dto.setReason("null");
+                   dto.setImageUrl(null);
 
-	                results.add(dto);
-	            }
-	            
-	            nextPageToken = (String) body.get("next_page_token");
-	            pageCount++;
-	
-	            if (nextPageToken != null) Thread.sleep(2000);
-	            
+                   results.add(dto);
+               }
+               
+               nextPageToken = (String) body.get("next_page_token");
+               pageCount++;
+   
+               if (nextPageToken != null) Thread.sleep(2000);
+               
             } while (nextPageToken != null && pageCount < 3);
         }
         
@@ -131,7 +133,7 @@ public class GooglePlaceApiService {
         
 
         try {
-        	 String dateStr = request.getDate();
+            String dateStr = request.getDate();
             if (dateStr == null || dateStr.trim().isEmpty()) {
                 dateStr = LocalDate.now().toString(); // yyyy-MM-dd 형식
             }
@@ -156,33 +158,24 @@ public class GooglePlaceApiService {
 
                 // return mapper.convertValue(resultsNode, new TypeReference<>() {});
             } catch (JsonProcessingException ex) {
-            	System.err.println("❌ JSON 파싱 실패! 응답 = \n" + llmCleaned);
+               System.err.println("❌ JSON 파싱 실패! 응답 = \n" + llmCleaned);
                 ex.printStackTrace();
             }
             
             for (Map<String, String> place : filteredResults) {
-                String latStr = place.get("latitude");
-                String lngStr = place.get("longitude");
+                String placeId = place.get("placeId");
+                String imageUrl = photoMap.get(placeId);
 
-                for (PlaceDTO dto : results) {
-                    String placeId = dto.getPlaceId(); // 이 값이 있어야 함!
-                    String imageUrl = photoMap.get(placeId);
 
-                    
-                        
-//                        place.put("imageUrl", photoMap.get(placeId));
-                        if (imageUrl == null) {
-                            System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
-                            System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
-                        } else {
-                            System.out.println("✅ 이미지 URL 매칭 성공: " + imageUrl);
-                        }
-
-                        place.put("imageUrl", imageUrl);
-                        
-                        break;
-                    }
+                if (imageUrl == null) {
+                    System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
+                    System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
+                } else {
                 }
+
+                place.put("imageUrl", imageUrl);
+            }
+
             
 
             System.out.println("필터링 후 개수 : " + filteredResults.size());
