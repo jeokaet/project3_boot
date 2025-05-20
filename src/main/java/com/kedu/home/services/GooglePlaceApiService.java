@@ -68,7 +68,7 @@ public class GooglePlaceApiService {
        Map<String, String> photoMap = new HashMap<>();
 
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-        List<String> keywords = List.of( "가볼만한곳", "카페", "맛집", "쇼핑몰" );
+        List<String> keywords = List.of( "관광지", "음식점", "카페", "쇼핑" );
        
 
         for (String keyword : keywords) {
@@ -99,6 +99,7 @@ public class GooglePlaceApiService {
                    Map<String, Object> location = (Map<String, Object>) geometry.get("location");
                    
                    String imageUrl = extractImageUrl(photos);
+                   System.out.println("장소아이디 : " + placeId);
                    photoMap.put(placeId, imageUrl);
                    
                    PlaceDTO dto = new PlaceDTO();
@@ -163,19 +164,26 @@ public class GooglePlaceApiService {
             }
             
             for (Map<String, String> place : filteredResults) {
-                String placeId = place.get("placeId");
-                String imageUrl = photoMap.get(placeId);
 
+                for (PlaceDTO dto : results) {
+                    String placeId = place.get("placeId");; // 이 값이 있어야 함!
+                    String imageUrl = photoMap.get(placeId);
 
-                if (imageUrl == null) {
-                    System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
-                    System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
-                } else {
+                    System.out.println("플레이스 아이디2 : " + photoMap.get(placeId));
+                        
+                        if (imageUrl == null) {
+                            System.out.println("⚠️ 이미지 URL이 null입니다! placeId: " + placeId);
+                            System.out.println("→ photoMap.containsKey(placeId)? " + photoMap.containsKey(placeId));
+                        } else {
+                            System.out.println("✅ 이미지 URL 매칭 성공: " + imageUrl);
+                        }
+
+                        System.out.println(imageUrl);
+                        place.put("imageUrl", imageUrl);
+                        
+                        break;
+                    }
                 }
-
-                place.put("imageUrl", imageUrl);
-            }
-
             
 
             System.out.println("필터링 후 개수 : " + filteredResults.size());
