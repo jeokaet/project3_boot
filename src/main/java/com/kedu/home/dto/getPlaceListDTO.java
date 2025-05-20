@@ -10,7 +10,6 @@ public class getPlaceListDTO {
 	private double longitude;
 	
 	public getPlaceListDTO() {}
-	
 
 	public getPlaceListDTO(String date, String startingLocation, double latitude, double longitude) {
 		super();
